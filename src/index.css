@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Fascinate&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&family=Fascinate&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&family=Fascinate&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
+
+@theme {
+  --font-Fascinate: "Fascinate", system-ui; 
+};
+@theme {
+  --font-Sourgummy: "Sour Gummy", system-ui; 
+};
+@theme {
+  --font-DynaPuff: "DynaPuff", system-ui; 
+}
+@import "tailwindcss";

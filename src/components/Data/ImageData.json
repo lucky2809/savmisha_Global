@@ -1,0 +1,24 @@
+{
+    "imageData": [
+        {
+            "id": 1,
+            "title": "Product 1",
+            "images": [
+                "AbstractMonroe.png",
+                "TheSmoker'sGaze.png",
+                "HomefortheHolidays.png",
+                "TheSmoker'sGaze.png"
+            ]
+        },
+        {
+            "id": 2,
+            "title": "Product 2",
+            "images": [
+                "TheSmoker'sGaze.png",
+                "AbstractMonroe.png",
+                "TheSmoker'sGaze.png",
+                "AbstractMonroe.png"
+            ]
+        }
+    ]
+}
