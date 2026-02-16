@@ -5,9 +5,9 @@ import './App.css'
 import Login from './components/pages/Login'
 import Signup from './components/pages/Signup'
 import { AuthProvider } from './components/Auth/AuthProvider'
-import { FloatingWhatsApp } from 'react-floating-whatsapp'
 import Home from './components/pages/Home'
 import { useEffect } from 'react'
+import FloatingWhatsapp from './components/ModalComponent/FlotingWhatsapp'
 // import Shop from './components/pages/Shop'
 
 function App() {
@@ -25,10 +25,12 @@ function App() {
 
   return (
     <>
-    <FloatingWhatsApp
+    {/* <FloatingWhatsApp
         avatar={`${import.meta.env.BASE_URL}createacc.jpg`}
         phoneNumber={import.meta.env.VITE_WHATSAPPNO}
-        accountName={import.meta.env.VITE_WHATSAPPNAME} />
+        accountName={import.meta.env.VITE_WHATSAPPNAME} /> */}
+
+        <FloatingWhatsapp />
 
 
       <BrowserRouter>

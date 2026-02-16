@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
+import { FaWhatsapp } from 'react-icons/fa'
 import { Link, useLocation } from 'react-router-dom'
 
 function Navbar() {
@@ -53,15 +54,15 @@ function Navbar() {
         ${show ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}
       `}
     >
-      <div className='flex py-5 px-2 md:px-10 lg:px-20 lg:py-10 '>
-        <div className='hidden lg:flex lg:flex-col justify-center gap-5 items-center lg:visible '>
-          <div><a
+      <div className='flex py-5 px-2 md:px-10 lg:px-10 lg:py-10 '>
+        <div className='hidden lg:flex lg:flex-col justify-center gap-5 items-center lg:visible'>
+          <div className='border border-white hover:border-black p-2 rounded-full cursor-pointer'><a
             href="https://www.instagram.com/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:scale-110 transition-transform"
           ><Icon className='text-black' icon="line-md:instagram" width="26" /></a></div>
-          <div><a
+          <div className='border border-white hover:border-black p-2 rounded-full cursor-pointer'><a
             href="mailto:savmishaglobaltrends@gmail.com"
             className="hover:scale-110 transition-transform"
           ><Icon className='text-black' icon="fluent-mdl2:edit-mail" width="26" /></a></div>
@@ -82,7 +83,7 @@ function Navbar() {
                   className={`pb-1 transition hover:text-gray-500
                 ${isActive('/') ? 'border-b-2 border-black' : 'border-b-2 border-transparent'}`}
                 >
-                  ILLUSTRATION
+                  PRODUCTS
                 </Link>
               </li>
 
@@ -96,7 +97,7 @@ function Navbar() {
                 </Link>
               </li>
 
-              <li className='cursor-pointer transition'>
+              <li className='cursor-pointer transition '>
                 <Link
                   to="/about"
                   className={`pb-1 transition hover:text-gray-500
@@ -120,13 +121,25 @@ function Navbar() {
           </div>
         </div>
 
-        <div className='hidden lg:flex lg:flex-col justify-center gap-5 items-center lg:visible '>
+        <div className='hidden lg:flex lg:flex-col justify-center gap-5 items-center lg:visible'>
           {/* <div>
                         <Profile />
                     </div> */}
-          <div className='border border-white hover:border-black p-2 rounded-full'>
-            <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER}`}><Icon className='text-black' icon="ion:call-sharp" width="22" /></a>
+          <div className='border border-white hover:border-black p-2 rounded-full cursor-pointer'>
+            <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER}`}><Icon className='text-black' icon="ion:call-sharp" width="24" /></a>
 
+          </div>
+          <div>
+            <a
+              href={`https://wa.me/${import.meta.env.VITE_WHATSAPPNO}`}   // <-- apna number yaha daalo
+              target="_blank"
+              rel="noopener noreferrer"
+              className=""
+            >
+              <div className="p-1 rounded-full shadow-2xl cursor-pointer flex items-center justify-center border border-white hover:border-black">
+                <Icon className='text-black' icon="fa7-brands:whatsapp" width="32" />
+              </div>
+            </a>
           </div>
         </div>
         {/* Hamburger / Cross Button */}
@@ -173,7 +186,7 @@ function Navbar() {
               onClick={() => setOpen(false)}
               className={`${isActive('/') ? 'border-b-2 border-black' : ''}`}
             >
-              ILLUSTRATION
+              PRODUCTS
             </Link>
           </li>
 
@@ -208,15 +221,15 @@ function Navbar() {
           </li> */}
           <div className='w-full flex justify-center gap-8 items-center pt-10'>
             <div><a
-            href="https://www.instagram.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:scale-110 transition-transform"
-          ><Icon className='text-black' icon="line-md:instagram" width="26" /></a></div>
-          <div><a
-            href="mailto:savmishaglobaltrends@gmail.com"
-            className="hover:scale-110 transition-transform"
-          ><Icon className='text-black' icon="fluent-mdl2:edit-mail" width="26" /></a></div>
+              href="https://www.instagram.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:scale-110 transition-transform"
+            ><Icon className='text-black' icon="line-md:instagram" width="26" /></a></div>
+            <div><a
+              href="mailto:savmishaglobaltrends@gmail.com"
+              className="hover:scale-110 transition-transform"
+            ><Icon className='text-black' icon="fluent-mdl2:edit-mail" width="26" /></a></div>
             <div><a href={`tel:${import.meta.env.VITE_PHONE_NUMBER}`}><Icon className='text-black' icon="ion:call-sharp" width="26" /></a></div>
           </div>
         </ul>
