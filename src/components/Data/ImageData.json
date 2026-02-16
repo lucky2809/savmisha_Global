@@ -4,20 +4,118 @@
             "id": 1,
             "title": "Product 1",
             "images": [
-                "AbstractMonroe.png",
-                "TheSmoker'sGaze.png",
-                "HomefortheHolidays.png",
-                "TheSmoker'sGaze.png"
+                "03.png",
+                "03-1.png",
+                "SGT0001.jpg"
             ]
         },
         {
             "id": 2,
             "title": "Product 2",
             "images": [
-                "TheSmoker'sGaze.png",
-                "AbstractMonroe.png",
-                "TheSmoker'sGaze.png",
-                "AbstractMonroe.png"
+                "01.png",
+                "SGT0002.jpg"
+                
+            ]
+        },
+        
+        {
+            "id": 3,
+            "title": "Product 3",
+            "images": [
+                "04.png",
+                "SGT0030.png"
+                
+            ]
+        },
+        {
+            "id": 4,
+            "title": "Product 4",
+            "images": [
+                "05.png",
+                "SGT0034.jpg"
+                
+            ]
+        },
+        {
+            "id": 5,
+            "title": "Product 5",
+            "images": [
+                "06.png",
+                "SGT0034.jpg"
+                
+                
+            ]
+        },
+        {
+            "id": 6,
+            "title": "Product 6",
+            "images": [
+                "07.png",
+                "SGT0051.png"
+                
+                
+            ]
+        },
+        {
+            "id": 7,
+            "title": "Product 7",
+            "images": [
+                "08.png",
+                "SGT0119.png"
+                
+                
+            ]
+        },
+        {
+            "id": 9,
+            "title": "Product 8",
+            "images": [
+                "09.png",
+                "SGT0077.png"
+                
+                
+            ]
+        },
+        {
+            "id": 10,
+            "title": "Product 9",
+            "images": [
+                "010.png",
+                "SGT0151.png"
+                
+                
+            ]
+        },
+        {
+            "id": 11,
+            "title": "Product 10",
+            "images": [
+                "011.png",
+                "SGT0080.png"
+                
+                
+            ]
+        },
+        {
+            "id": 12,
+            "title": "Product 11",
+            "images": [
+                "012.png",
+                "SGT0052.png"
+                
+                
+            ]
+        },
+        {
+            "id": 13,
+            "title": "Product 12",
+            "images": [
+                "13.png",
+                "SGT0002.jpg",
+                "SGT0004.jpg",
+                "SGT0012.jpg"
+                
             ]
         }
     ]

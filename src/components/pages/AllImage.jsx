@@ -24,7 +24,7 @@ function AllImage() {
             <img
               src={item.images[0]}
               alt={item.title}
-              className="w-full h-60 object-cover hover:scale-110 transition duration-500"
+              className="w-full object-cover hover:scale-110 transition duration-500"
             />
           </div>
         ))}
@@ -32,7 +32,7 @@ function AllImage() {
 
       {/* Modal */}
       {selectedProduct && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 px-5">
           
           {/* Close */}
           <button
@@ -45,10 +45,10 @@ function AllImage() {
           <div className="bg-white rounded-xl p-5 max-w-4xl w-full flex flex-col md:flex-row gap-5">
             
             {/* Main Image */}
-            <div className="flex-1 max-h-[70vh] flex items-center justify-center">
+            <div className="flex-1 wfull h-full flex items-center justify-center">
               <img
                 src={mainImage}
-                className="w-full h-full object-contain rounded-xl transition-all duration-500"
+                className="w-full h-fit object-contain rounded-xl transition-all duration-500"
               />
             </div>
 

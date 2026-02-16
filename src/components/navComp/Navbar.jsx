@@ -56,20 +56,20 @@ function Navbar() {
       <div className='flex py-5 px-2 md:px-10 lg:px-20 lg:py-10 '>
         <div className='hidden lg:flex lg:flex-col justify-center gap-5 items-center lg:visible '>
           <div><a
-            href="https://www.instagram.com/studiodtalk"
+            href="https://www.instagram.com/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:scale-110 transition-transform"
           ><Icon className='text-black' icon="line-md:instagram" width="26" /></a></div>
           <div><a
-            href="mailto:yourmail@gmail.com"
+            href="mailto:savmishaglobaltrends@gmail.com"
             className="hover:scale-110 transition-transform"
           ><Icon className='text-black' icon="fluent-mdl2:edit-mail" width="26" /></a></div>
         </div>
         <div className='w-full flex lg:flex-col flex-row items-center  justify-between gap-12'>
           {/* Logo */}
-          <div className='lg:w-70 w-48'>
-            <img className='w-full h-full object-contain' src="sdtlogo1.png" alt="logo" />
+          <div className='lg:w-70 w-40'>
+            <img className='w-full h-full object-contain' src="logo1.png" alt="logo" />
           </div>
 
           {/* Desktop Menu */}
@@ -124,13 +124,13 @@ function Navbar() {
           {/* <div>
                         <Profile />
                     </div> */}
-          <div>
-            <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER}`}><Icon className='text-black' icon="ion:call-sharp" width="26" /></a>
+          <div className='border border-white hover:border-black p-2 rounded-full'>
+            <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER}`}><Icon className='text-black' icon="ion:call-sharp" width="22" /></a>
 
           </div>
         </div>
         {/* Hamburger / Cross Button */}
-        <div className=" lg:hidden">
+        <div className=" lg:hidden flex items-center">
           <button
             onClick={() => setOpen(!open)}
             className="relative w-8 h-8 flex items-center justify-center z-50"
@@ -208,13 +208,13 @@ function Navbar() {
           </li> */}
           <div className='w-full flex justify-center gap-8 items-center pt-10'>
             <div><a
-            href="https://www.instagram.com/studiodtalk"
+            href="https://www.instagram.com/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:scale-110 transition-transform"
           ><Icon className='text-black' icon="line-md:instagram" width="26" /></a></div>
           <div><a
-            href="mailto:yourmail@gmail.com"
+            href="mailto:savmishaglobaltrends@gmail.com"
             className="hover:scale-110 transition-transform"
           ><Icon className='text-black' icon="fluent-mdl2:edit-mail" width="26" /></a></div>
             <div><a href={`tel:${import.meta.env.VITE_PHONE_NUMBER}`}><Icon className='text-black' icon="ion:call-sharp" width="26" /></a></div>
