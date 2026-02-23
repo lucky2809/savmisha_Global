@@ -1,43 +1,45 @@
-import { createContext, useContext, useEffect, useLayoutEffect, useState } from "react";
+// AuthContext.jsx
+import { createContext, useContext, useLayoutEffect, useState } from "react";
 import useUserStore from "../../store/userStore";
-import { useLocation } from "react-router-dom";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    // const [user, setUser] = useState(null);
     const user = useUserStore((state) => state.user);
     const setUser = useUserStore((state) => state.setUser);
-    const [loading, setLoading] = useState(true); // ⬅️ new 
-    const location = useLocation(); 
+    const [loading, setLoading] = useState(true);
 
-
-    const fetchVerifyToken = async (token, user) => {
-        if(user) return
+    const fetchVerifyToken = async (token) => {
         try {
-            const fetchData = await fetch(`${import.meta.env.VITE_API_URL}/verify-token/`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/verify-token/`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            const data = await fetchData.json();
-            setUser(data.user_data);
-        } catch {
+
+            const data = await res.json();
+            if (data?.user_data) {
+                setUser(data.user_data);
+            } else {
+                setUser(null);
+                localStorage.removeItem("access_token");
+            }
+        } catch (err) {
             setUser(null);
+            localStorage.removeItem("access_token");
         } finally {
-            setLoading(false); // ⬅️ done verifying
+            setLoading(false);
         }
     };
 
     useLayoutEffect(() => {
-        
         const token = localStorage.getItem("access_token");
         if (token) {
-            fetchVerifyToken(token, user);
+            fetchVerifyToken(token);
         } else {
             setUser(null);
-            setLoading(false); // ⬅️ no token, stop loading
+            setLoading(false);
         }
     }, []);
 

@@ -1,85 +1,112 @@
 import { useNavigate } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
-import { Icon } from '@iconify/react/dist/iconify.js';
 import { toast } from 'react-toastify';
 import useUserStore from '../../store/userStore';
-
+import { Icon } from '@iconify/react';
 
 function Profile({ color = "#fff" }) {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);   // 👈 outside click ref
   const navigate = useNavigate();
   const { user, setUser } = useUserStore();
 
-  const toggleDropdown = () => setIsOpen((prev) => !prev);
+  const toggleDropdown = () => setIsOpen(prev => !prev);
 
   // ✅ logout handler
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     setUser(null);
-    toast.success('Logout Successful'); // fixed toast
+    toast.success('Logout Successful');
     navigate("/login");
+    setIsOpen(false);
   };
 
-  // ✅ renamed to avoid conflict
   const goToProfile = () => {
-    navigate('/cart');
+    navigate('/dashboard');
+    setIsOpen(false);
   };
 
-  // ✅ dropdown
-  const ProfileDropDown = ({ user = {}, color }) => (
-    <div className="relative inline-block text-left">
-      <button
-        onClick={toggleDropdown}
-        className="inline-flex justify-center w-full rounded-md text-sm font-medium cursor-pointer focus:outline-none"
-      >
-        <Icon
-          width={40}
-          className={`text-[${color}] font-bold`}
-          icon={"qlementine-icons:user-16"}
-        />
-      </button>
+  // ✅ OUTSIDE CLICK CLOSE
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
 
-      {isOpen && (
-        <div className="absolute right-0 z-10 mt-2 w-30 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-          <div className="py-1" role="menu">
-            <button
-              onClick={goToProfile}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              Profile
-            </button>
-            <button
-              disabled
-              className="block w-full text-left px-4 py-2 text-sm text-gray-400 cursor-not-allowed"
-              role="menuitem"
-            >
-              Settings
-            </button>
-            <button
-              onClick={handleLogout}
-              className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
-              role="menuitem"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <Box sx={{ width: '100%', display: 'flex', alignItems: "center" }}>
       {user ? (
-        <ProfileDropDown user={user} color={color} />
+        <div ref={dropdownRef} className="relative inline-block text-left">
+
+          {/* 🔘 Profile Button */}
+          <button
+            onClick={toggleDropdown}
+            className="flex items-center gap-2 cursor-pointer rounded-md text-md font-medium focus:outline-none"
+          >
+            <div className="font-bold text-black hidden lg:block">
+              {user?.fullname || "Profile"}
+            </div>
+            <div className='lg:hidden'>
+              <Icon
+                width={30}
+                className={`text-[${color}] font-bold`}
+                icon={"qlementine-icons:user-16"}
+              />
+            </div>
+
+          </button>
+
+          {/* 🔽 Dropdown */}
+          {isOpen && (
+            <div className="absolute -right-5 lg:right-0 z-20 mt-3 w-48 rounded-md bg-white shadow-xl border border-gray-200">
+
+              {/* 🔺 Arrow Indicator */}
+              <div className="absolute -top-2 right-6 w-4 h-4 bg-white rotate-45 border-l border-t border-gray-200"></div>
+
+              <div className="py-2">
+
+                {/* 👤 user info */}
+                <div className="px-4 py-2 text-center border-b text-xs text-gray-500 cursor-text">
+                  Signed in as <br />
+                  <span className="font-semibold text-gray-800">
+                    {user?.email}
+                  </span>
+                </div>
+
+                {user?.role === "admin" && (
+                  <button
+                    onClick={goToProfile}
+                    className="block w-full text-center px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                  >
+                    Dashboard
+                  </button>
+                )}
+
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-center px-4 py-2 text-sm text-red-600 hover:bg-red-100 cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          )}
+
+        </div>
       ) : (
         <div
           onClick={() => navigate("/login")}
-          className="cursor-pointer border hover:bg-black hover:text-white bg-white text-black   p-1 text-sm rounded-tr-xl flex items-center gap-2"
+          className="cursor-pointer border px-1 bg-black text-white md:border md:px-2 md:py-1 lg:bg-none lg:border-none lg:bg-white lg:text-black lg:p-0 "
         >
-          <div>Login</div>
+          Login
         </div>
       )}
     </Box>

@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react'
 import React, { useEffect, useState } from 'react'
 import { FaWhatsapp } from 'react-icons/fa'
 import { Link, useLocation } from 'react-router-dom'
+import Profile from '../pages/Profile'
 
 function Navbar() {
   const [show, setShow] = useState(true)
@@ -54,7 +55,7 @@ function Navbar() {
         ${show ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}
       `}
     >
-      <div className='flex py-5 px-2 md:px-10 lg:px-10 lg:py-10 '>
+      <div className='flex py-5 px-2 md:px-10 lg:px-10 lg:py-10 gap-2 md:gap-5'>
         <div className='hidden lg:flex lg:flex-col justify-center gap-5 items-center lg:visible'>
           <div className='border border-white hover:border-black p-2 rounded-full cursor-pointer'><a
             href="https://www.instagram.com/"
@@ -107,15 +108,9 @@ function Navbar() {
                 </Link>
               </li>
 
-              {/* <li className='cursor-pointer transition'>
-                <Link
-                  to="/shop"
-                  className={`pb-1 transition hover:text-gray-500
-                ${isActive('/shop') ? 'border-b-2 border-black' : 'border-b-2 border-transparent'}`}
-                >
-                  SHOP
-                </Link>
-              </li> */}
+              <li className='cursor-pointer transition'>
+                <Profile/>
+              </li>
 
             </ul>
           </div>
@@ -141,6 +136,9 @@ function Navbar() {
               </div>
             </a>
           </div>
+        </div>
+        <div className='lg:hidden flex items-center'>
+          <Profile/>
         </div>
         {/* Hamburger / Cross Button */}
         <div className=" lg:hidden flex items-center">
@@ -175,7 +173,7 @@ function Navbar() {
         `}
         style={{
           top: "79px",
-          height: "calc(115vh - 120px)"
+          height: "calc(120vh - 120px)"
         }}
       >
         <ul className="flex flex-col items-center justify-center h-full gap-8 text-lg font-semibold text-black">
@@ -209,16 +207,6 @@ function Navbar() {
               ABOUT
             </Link>
           </li>
-
-          {/* <li>
-            <Link
-              to="/shop"
-              onClick={() => setOpen(false)}
-              className={`${isActive('/shop') ? 'border-b-2 border-black' : ''}`}
-            >
-              SHOP
-            </Link>
-          </li> */}
           <div className='w-full flex justify-center gap-8 items-center pt-10'>
             <div><a
               href="https://www.instagram.com/"

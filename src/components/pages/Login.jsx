@@ -1,32 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react'
-// import Navbar from '../navComp/Navbar'
-import { Icon } from '@iconify/react/dist/iconify.js'
+import React, { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
 import useUserStore from '../../store/userStore'
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-
 const bgimgurl = import.meta.env.BASE_URL
 
-
 const ErrorMessage = ({ error, field }) => {
-    return error[field] && <p className='text-red-500' > {error[field]} </p>
+    return error[field] && <p className='text-red-500 text-sm mt-1'> {error[field]} </p>
 }
 
 function Login() {
-
 
     const email = useRef("")
     const password = useRef("")
     const navigate = useNavigate()
     const [error, setError] = useState({})
-    const { user, setUser } = useUserStore()
+    const { setUser } = useUserStore()
     const [show, setShow] = useState(false);
 
-
-
-
+    // ❌ LOGIC SAME — NO CHANGE
     const signInHandler = async (e) => {
         e.preventDefault()
 
@@ -34,15 +27,18 @@ function Login() {
             email: email.current.value,
             password: password.current.value
         }
-        // console.log(object)
+
         if (!object.email) {
             setError(prev => ({ ...prev, email: "Email is required" }))
+            toast.error("Email is required")
             return
         } else {
             setError(prev => ({ ...prev, email: "" }))
         }
+
         if (!object.password) {
             setError(prev => ({ ...prev, password: "Password is required" }))
+            toast.error("Password is required")
             return
         } else {
             setError(prev => ({ ...prev, password: "" }))
@@ -56,10 +52,11 @@ function Login() {
                 body: JSON.stringify(object)
             })
             const data = await fetchData.json()
+
             if (fetchData.ok) {
                 localStorage.setItem("access_token", data.token)
-                // alert(JSON.stringify(data.message))
-                toast.success("Login Successfull")
+                toast.success("Login Successful 🎉")
+
                 const fetchVerifyToken = async (token) => {
                     try {
                         const fetchData = await fetch(`${import.meta.env.VITE_API_URL}/verify-token/`, {
@@ -71,6 +68,7 @@ function Login() {
                         const data = await fetchData.json();
                         const role = data.user_data?.role
                         setUser(data.user_data)
+
                         if (role === "admin") {
                             window.location.href = ("/")
                         } else {
@@ -78,7 +76,7 @@ function Login() {
                         }
                     } catch (err) {
                         console.error("Token verification failed:", err);
-
+                        toast.error("Token verification failed")
                     }
                 };
 
@@ -94,51 +92,57 @@ function Login() {
                 if (data.error_type === "password") {
                     setError(prev => ({ ...prev, password: data.message }))
                 }
-                console.log("somthing went wrong ..!")
-                toast.warn(`${data.message}`)
-
+                toast.warning(data.message || "Login failed ❌")
             }
         } catch (err) {
             console.log(err)
-
-
+            toast.error("Server error ❌")
         }
     }
 
-
-    console.log(error)
     return (
-        <div className='main-charecter w-full'
+        <div className='w-full min-h-screen flex items-center justify-center bg-cover'
             style={{ backgroundImage: `url(${bgimgurl}login.png)` }}
         >
-            <div className='max-sm:px-5 max-sm:py-5'>
-                {/* <Navbar /> */}
-                <div className=' w-full flex justify-between'>
-                    <div className='w-full b-black max-sm:w-full h-screen flex justify-center items-center max-lg:px-20 max-sm:px-5'>
-                        <div className='flex-col flex items-center text-center font-DynaPuff'>
-                        {/* <Icon width={50} className='text-gray-800 text-center w-full' icon={"qlementine-icons:user-16"} /> */}
-                        <div className='w-15 flex '>
-                            <img src="faviconsdt1.png" alt="" srcset="" />
-                        </div>
-                        <div className='py-4 pt-6'>
-                            <h1 className='text-xl  font-DynaPuff'>Login</h1>
-                            <p className='text-md text-gray-700'>Welcome back</p>
-                        </div>
-                        <div className='flex-col flex w-full  text-start gap-5 py-2'>
-                            <label htmlFor="" className='text-xl '>Email address*</label>
-                            <input ref={email} type="text" className='border border-gray-400 rounded-md p-2' placeholder='Email address' />
+
+            {/* 🔔 Toast Container */}
+            <ToastContainer position="top-right" autoClose={2500} />
+
+            <div className='w-full max-w-4xl bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2'>
+
+                {/* LEFT */}
+                <div className='flex flex-col justify-center items-center p-8'>
+                    <div className='flex flex-col items-center'>
+                        <img className='w-20' src="logo02.png" alt="logo" />
+                        <p className='font-bold text-lg'>SAVMISHA GLOBAL</p>
+                    </div>
+
+                    <div className='py-4 text-center'>
+                        <h1 className='text-2xl font-bold'>Login</h1>
+                        <p className='text-gray-600'>Welcome back 👋</p>
+                    </div>
+
+                    <div className='w-full flex flex-col gap-4'>
+                        <div>
+                            <label className='font-semibold'>Email*</label>
+                            <input
+                                ref={email}
+                                type="text"
+                                className='w-full border rounded-lg p-2 focus:ring-2 focus:ring-orange-300 outline-none'
+                                placeholder='Email address'
+                            />
                             <ErrorMessage error={error} field={"email"} />
-                            {/* <label htmlFor="" className='text-xl'>Password*</label>
-                            <input ref={password} type="password" className='border-2 border-gray-600 rounded-md p-2' placeholder='Password' />
-                            <ErrorMessage error={error} field={"password"} /> */}
-                            <div className="relative w-full">
+                        </div>
+
+                        <div>
+                            <label className='font-semibold'>Password*</label>
+                            <div className="relative">
                                 <input
                                     type={show ? "text" : "password"}
                                     ref={password}
-                                    className="w-full border border-gray-400 px-3 py-2 rounded-lg"
+                                    className="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-orange-300 outline-none"
                                     placeholder="Password"
                                 />
-
                                 <button
                                     type="button"
                                     onClick={() => setShow(!show)}
@@ -147,23 +151,39 @@ function Login() {
                                     {show ? <FaEye /> : <FaEyeSlash />}
                                 </button>
                             </div>
+                            <ErrorMessage error={error} field={"password"} />
                         </div>
-                        <div className='flex max-md:flex-col gap-2 pt-2 justify-between items-center w-full'>
-                            <div className='flex gap-2'>
-                                <input required type="checkbox" className='w-4' /><p className='font-Sourgummy text-gray-700'>Keep me logged in</p>
+
+                        <div className='flex justify-between items-center text-sm'>
+                            <div className='flex gap-2 items-center'>
+                                <input type="checkbox" />
+                                <span className='text-gray-600'>Keep me logged in</span>
                             </div>
-                            <Link to={'/forgetpassword'}><p className='text-blue-800 border-b border-blue-800'>forget password?</p></Link>
+                            <Link to={'/forgetpassword'} className='text-orange-600 hover:underline'>
+                                Forgot password?
+                            </Link>
                         </div>
-                        <div className='flex flex-col w-full px-1 p-5 gap-5 '>
-                            <button onClick={signInHandler} className='text-white bg-pink-600 p-2 text-md hover:bg-pink-400 rounded-3xl w-full cursor-pointer'>Log in</button>
-                            <Link to={"/signup"} className=''><button className='bg-black text-white p-2 text-md rounded-3xl w-full cursor-pointer'>Create Account</button></Link>
-                        </div>
-                        </div>
-                    </div>
-                    <div className='max-lg:hidden w-[45%] flex'>
-                        <img className='' src="login.jpg" alt="" srcset="" />
+
+                        <button
+                            onClick={signInHandler}
+                            className='bg-[#f59e7b] hover:bg-[#E7B09B] text-white py-2 rounded-xl font-semibold transition cursor-pointer'
+                        >
+                            Log in
+                        </button>
+
+                        <Link to={"/signup"}>
+                            <button className='bg-black text-white py-2 rounded-xl w-full font-semibold cursor-pointer'>
+                                Create Account
+                            </button>
+                        </Link>
                     </div>
                 </div>
+
+                {/* RIGHT IMAGE */}
+                <div className='hidden lg:block'>
+                    <img className='w-full h-full object-cover' src="login.png" alt="login" />
+                </div>
+
             </div>
         </div>
     )

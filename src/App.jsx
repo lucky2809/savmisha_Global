@@ -1,6 +1,4 @@
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
-
-
 import './App.css'
 import Login from './components/pages/Login'
 import Signup from './components/pages/Signup'
@@ -8,12 +6,17 @@ import { AuthProvider } from './components/Auth/AuthProvider'
 import Home from './components/pages/Home'
 import { useEffect } from 'react'
 import FloatingWhatsapp from './components/ModalComponent/FlotingWhatsapp'
+import PublicRoute from './components/Auth/PublicRoute'
+import ImageUpload from './components/Admin/ImageUpload'
+import ProtectedRoute from './components/Auth/ProtectedRoute'
+import DashboardRoot from './components/Admin/DashboardRoot'
+import AllUser from './components/Admin/AllUser'
 // import Shop from './components/pages/Shop'
 
 function App() {
 
 
-    function ScrollToTop() {
+  function ScrollToTop() {
     const { pathname } = useLocation();
 
     useEffect(() => {
@@ -25,24 +28,33 @@ function App() {
 
   return (
     <>
-    {/* <FloatingWhatsApp
+      {/* <FloatingWhatsApp
         avatar={`${import.meta.env.BASE_URL}createacc.jpg`}
         phoneNumber={import.meta.env.VITE_WHATSAPPNO}
         accountName={import.meta.env.VITE_WHATSAPPNAME} /> */}
 
-        <FloatingWhatsapp />
+      <FloatingWhatsapp />
 
 
       <BrowserRouter>
-      <ScrollToTop />
-      <AuthProvider>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          {/* <Route path='/shop' element={<Shop />} /> */}
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Signup />} />
 
-        </Routes>
+        <AuthProvider>
+          <ScrollToTop />
+          <Routes>
+            <Route path='/' element={<Home />} />
+            {/* <Route path='/shop' element={<Shop />} /> */}
+            <Route path='/login' element={<PublicRoute><Login /></PublicRoute>} />
+            <Route path='/signup' element={<Signup />} />
+            {/* <Route path='/imageupload' element={
+            // <ProtectedRoute>
+              <ImageUpload />
+              //  </ProtectedRoute>
+            } /> */}
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardRoot /></ProtectedRoute>}>
+              <Route path="upload" element={<ImageUpload />} />   {/* Image Upload */}
+              <Route path="users" element={<AllUser />} />       {/* All Users */}
+            </Route>
+          </Routes>
         </AuthProvider>
       </BrowserRouter>
     </>
