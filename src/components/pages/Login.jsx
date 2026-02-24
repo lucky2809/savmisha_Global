@@ -24,7 +24,7 @@ function Login() {
         e.preventDefault()
 
         const object = {
-            email: email.current.value,
+            email: email.current.value.toLowerCase(),   // 🔥 FIX
             password: password.current.value
         }
 

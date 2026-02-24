@@ -50,7 +50,7 @@ function Signup() {
         const object = {
             fullname: fullname.current.value,
             phone: phone.current.value,
-            email: email.current.value,
+            email: email.current.value.toLowerCase(),   // 🔥 FIX
             password: password.current.value
         }
 

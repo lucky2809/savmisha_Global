@@ -3,17 +3,22 @@ import React, { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import { toast } from 'react-toastify';
 import useUserStore from '../../store/userStore';
-import { Icon } from '@iconify/react';
 
 function Profile({ color = "#fff" }) {
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);   // 👈 outside click ref
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const { user, setUser } = useUserStore();
 
+  /* ================= HELPERS ================= */
+  const getFirstLetter = (name) => {
+    if (!name) return "U";
+    return name.trim().charAt(0).toUpperCase();
+  };
+
   const toggleDropdown = () => setIsOpen(prev => !prev);
 
-  // ✅ logout handler
+  /* ================= LOGOUT ================= */
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     setUser(null);
@@ -27,7 +32,7 @@ function Profile({ color = "#fff" }) {
     setIsOpen(false);
   };
 
-  // ✅ OUTSIDE CLICK CLOSE
+  /* ================= OUTSIDE CLICK CLOSE ================= */
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -51,22 +56,23 @@ function Profile({ color = "#fff" }) {
             onClick={toggleDropdown}
             className="flex items-center gap-2 cursor-pointer rounded-md text-md font-medium focus:outline-none"
           >
-            <div className="font-bold text-black hidden lg:block">
+            {/* DESKTOP NAME */}
+            <div className="font-bold text-[#f59e7b] hover:text-[#E7B09B] hidden lg:block">
               {user?.fullname || "Profile"}
             </div>
-            <div className='lg:hidden'>
-              <Icon
-                width={30}
-                className={`text-[${color}] font-bold`}
-                icon={"qlementine-icons:user-16"}
-              />
+
+            {/* MOBILE LETTER AVATAR */}
+            <div className="lg:hidden">
+              <div className="w-8 h-8 rounded-full bg-[#f59e7b] flex items-center text-center justify-center text-white font-bold text-xl uppercase shadow-md">
+                {getFirstLetter(user?.fullname)}
+              </div>
             </div>
 
           </button>
 
           {/* 🔽 Dropdown */}
           {isOpen && (
-            <div className="absolute -right-5 lg:right-0 z-20 mt-3 w-48 rounded-md bg-white shadow-xl border border-gray-200">
+            <div className="absolute -right-5 lg:right-0 z-20 mt-3 w-fit rounded-md bg-white shadow-xl border border-gray-200">
 
               {/* 🔺 Arrow Indicator */}
               <div className="absolute -top-2 right-6 w-4 h-4 bg-white rotate-45 border-l border-t border-gray-200"></div>
@@ -74,9 +80,9 @@ function Profile({ color = "#fff" }) {
               <div className="py-2">
 
                 {/* 👤 user info */}
-                <div className="px-4 py-2 text-center border-b text-xs text-gray-500 cursor-text">
+                <div className="w-full px-4 py-2 text-center border-b text-xs text-gray-500 cursor-text">
                   Signed in as <br />
-                  <span className="font-semibold text-gray-800">
+                  <span className="font-semibold text-gray-800 w-fit">
                     {user?.email}
                   </span>
                 </div>
@@ -104,7 +110,7 @@ function Profile({ color = "#fff" }) {
       ) : (
         <div
           onClick={() => navigate("/login")}
-          className="cursor-pointer border px-1 bg-black text-white md:border md:px-2 md:py-1 lg:bg-none lg:border-none lg:bg-white lg:text-black lg:p-0 "
+          className="cursor-pointer border px-2 bg-black text-white md:border md:px-3 md:py-1 lg:bg-none lg:border-none lg:bg-white lg:text-black lg:p-0 "
         >
           Login
         </div>
