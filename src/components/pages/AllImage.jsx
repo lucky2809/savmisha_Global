@@ -28,10 +28,8 @@ function AllImage() {
         id: item._id,
         title: "Product",
         images: [
-          `${import.meta.env.VITE_API_URL}/uploads/images/${item.mainImage}`,
-          ...item.otherImages.map(
-            (img) => `${import.meta.env.VITE_API_URL}/uploads/images/${img}`
-          ),
+          item.mainImage,        // ✅ direct use
+          ...item.otherImages,   // ✅ direct use
         ],
       }));
 
@@ -153,13 +151,13 @@ function AllImage() {
           </button>
 
           <div className="bg-white rounded-xl p-2 lg:p-5 max-w-4xl w-full flex flex-col md:flex-row gap-2 lg:gap-5 relative">
-        {/* Close */}
-        <button
-            onClick={() => setSelectedProduct(null)}
-            className=" md:hidden lg-hidden w-full flex justify-end text-black md:text-white text-3xl cursor-pointer"
-          >
-            ✕
-          </button>
+            {/* Close */}
+            <button
+              onClick={() => setSelectedProduct(null)}
+              className=" md:hidden lg-hidden w-full flex justify-end text-black md:text-white text-3xl cursor-pointer"
+            >
+              ✕
+            </button>
             {/* Main Image */}
             <div className=" flex-1 max-h-[70vh] w-full flex items-center justify-center overflow-hidden">
               <img
@@ -167,8 +165,8 @@ function AllImage() {
                 className="w-full h-full object-contain rounded-xl transition-all duration-500 overflow-hidden"
               />
             </div>
-            
-          
+
+
 
             {/* Thumbnails */}
             <div className="grid grid-cols-2 md:flex md:flex-col gap-3 md:w-28 justify-center">
