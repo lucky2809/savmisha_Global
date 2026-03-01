@@ -14,6 +14,8 @@ function AllImage() {
   const { user } = useUserStore();
   const isAdmin = user?.role === "admin";
 
+  const HOST = `${import.meta.env.VITE_API_URL}`;
+
   // 🔹 APIs
   const GET_API = `${import.meta.env.VITE_API_URL}/images/all`;
   // const DELETE_API = `${import.meta.env.VITE_API_URL}/images`;
@@ -24,14 +26,22 @@ function AllImage() {
     try {
       const res = await axios.get(GET_API);
 
-      const formattedData = res.data.data.map((item) => ({
-        id: item._id,
-        title: "Product",
-        images: [
-          item.mainImage,        // ✅ direct use
-          ...item.otherImages,   // ✅ direct use
-        ],
-      }));
+      const formattedData = res.data.data.map((item) => {
+        const others = [...item.otherImages].filter(Boolean).map(img => HOST + img)
+        const otherThumb = [...item.otherThumbnails].filter(Boolean).map(img => HOST + img)
+        return {
+          id: item._id,
+          title: "Product",
+          images: [
+            HOST + item.mainImage,        // ✅ direct use
+            ...others,   // ✅ direct use
+          ],
+          thumbnails: [
+            HOST + item.mainThumbnail,
+            ...otherThumb
+          ]
+        }
+      });
 
       setProducts(formattedData);
     } catch (error) {
@@ -102,6 +112,16 @@ function AllImage() {
   //   }
   // };
 
+  const thumbnailToImage = (thumbPath) => {
+    if (!thumbPath) return null;
+
+    return thumbPath.replace(/_thumb\.webp$/i, ".webp");
+  };
+
+  const handleSetThumbnail = (thumb = "") => {
+      setMainImage(thumbnailToImage(thumb))
+  }
+
   return (
     <div className="w-fit px-3 py-30 pt-50 md:px-10 lg:px-14 lg:pt-60">
 
@@ -170,10 +190,10 @@ function AllImage() {
 
             {/* Thumbnails */}
             <div className="grid grid-cols-2 md:flex md:flex-col gap-3 md:w-28 justify-center">
-              {selectedProduct.images.map((img, i) => (
+              {selectedProduct.thumbnails.map((img, i) => (
                 <div
                   key={i}
-                  onClick={() => setMainImage(img)}
+                  onClick={() => handleSetThumbnail(img)}
                   className={`border-2 rounded-lg p-1 cursor-pointer transition-all duration-300 w-25 h-25
                     ${mainImage === img
                       ? "border-blue-500 scale-105"
