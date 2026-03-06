@@ -8,7 +8,7 @@ function Profile({ color = "#fff" }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-  const { user, setUser } = useUserStore();
+  const { user, logout } = useUserStore();
 
   /* ================= HELPERS ================= */
   const getFirstLetter = (name) => {
@@ -19,13 +19,12 @@ function Profile({ color = "#fff" }) {
   const toggleDropdown = () => setIsOpen(prev => !prev);
 
   /* ================= LOGOUT ================= */
-  const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    setUser(null);
-    toast.success('Logout Successful');
-    navigate("/login");
-    setIsOpen(false);
-  };
+const handleLogout = () => {
+  logout(); // zustand logout
+  toast.success("Logout Successful");
+  navigate("/login");
+  setIsOpen(false);
+};
 
   const goToProfile = () => {
     navigate('/dashboard');

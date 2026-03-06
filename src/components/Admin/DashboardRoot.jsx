@@ -26,9 +26,11 @@ import {
     ChevronRight as ChevronRightIcon,
     Image as ImageIcon,          // ✅ NEW
     People as PeopleIcon,        // ✅ NEW
+    Image as ImageData
 } from "@mui/icons-material";
 
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
+import BackButton from "../pages/BackButton";
 
 const drawerWidth = 240;
 const collapsedWidth = 80;
@@ -56,6 +58,7 @@ export default function DashboardRoot() {
         // { text: "Overview", path: "/dashboard", icon: <DashboardIcon /> },
         { text: "Image Upload", path: "/dashboard/upload", icon: <ImageIcon /> }, // ✅
         { text: "All Users", path: "/dashboard/users", icon: <PeopleIcon /> },   // ✅
+        { text: "BulkImage Upload", path: "/dashboard/bulkImagepload", icon: <ImageData /> },   // ✅
         // { text: "Analytics", path: "/dashboard/analytics", icon: <BarChartIcon /> },
         // { text: "Widget Settings", path: "/dashboard/widget", icon: <ChatIcon /> },
         // { text: "Settings", path: "/dashboard/settings", icon: <SettingsIcon /> },
@@ -173,10 +176,12 @@ export default function DashboardRoot() {
                     >
                         <MenuIcon />
                     </IconButton>
-
+                <div className="w-full flex items-center justify-between">
                     <Typography variant="h6" noWrap>
                         Dashboard
                     </Typography>
+                    <BackButton />
+                    </div>
                 </Toolbar>
             </AppBar>
 

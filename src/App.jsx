@@ -11,6 +11,9 @@ import ImageUpload from './components/Admin/ImageUpload'
 import ProtectedRoute from './components/Auth/ProtectedRoute'
 import DashboardRoot from './components/Admin/DashboardRoot'
 import AllUser from './components/Admin/AllUser'
+import About from './components/pages/About'
+import Contact from './components/pages/Contact'
+import BulkImageUpload from './components/Admin/BulkImageUpload'
 // import Shop from './components/pages/Shop'
 
 function App() {
@@ -45,6 +48,8 @@ function App() {
             {/* <Route path='/shop' element={<Shop />} /> */}
             <Route path='/login' element={<PublicRoute><Login /></PublicRoute>} />
             <Route path='/signup' element={<Signup />} />
+            <Route path='/about' element={<About />} />
+            <Route path='/contact' element={<Contact />} />
             {/* <Route path='/imageupload' element={
             // <ProtectedRoute>
               <ImageUpload />
@@ -53,6 +58,7 @@ function App() {
             <Route path="/dashboard" element={<ProtectedRoute><DashboardRoot /></ProtectedRoute>}>
               <Route path="upload" element={<ImageUpload />} />   {/* Image Upload */}
               <Route path="users" element={<AllUser />} />       {/* All Users */}
+              <Route path="bulkImagepload" element={<BulkImageUpload />} />       {/* All Users */}
             </Route>
           </Routes>
         </AuthProvider>

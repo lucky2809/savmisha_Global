@@ -5,11 +5,17 @@ const useUserStore = create(
   persist(
     (set) => ({
       user: null,
-      setUser: (data) => set({ user: data }),
-      logout: () => set({ user: null })
+      token: null,
+
+      setAuth: (user, token) => set({ user, token }),
+
+      logout: () => {
+        set({ user: null, token: null })
+        localStorage.removeItem("access_token")
+      }
     }),
     {
-      name: 'user-storage', // localStorage key
+      name: 'auth-storage',
     }
   )
 )

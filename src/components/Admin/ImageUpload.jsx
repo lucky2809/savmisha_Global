@@ -14,23 +14,23 @@ const ImageUpload = () => {
 
   // handle file select
   const handleImages = (e) => {
-  const files = Array.from(e.target.files);
+    const files = Array.from(e.target.files);
 
-  // combine old + new images
-  const combined = [...images, ...files];
+    // combine old + new images
+    const combined = [...images, ...files];
 
-  if (combined.length > 5) {
-    alert("Maximum 5 images allowed ❌");
-    return;
-  }
+    if (combined.length > 5) {
+      alert("Maximum 5 images allowed ❌");
+      return;
+    }
 
-  setImages(combined);
+    setImages(combined);
 
-  // if first image, auto set main
-  if (combined.length === files.length) {
-    setMainIndex(0);
-  }
-};
+    // if first image, auto set main
+    if (combined.length === files.length) {
+      setMainIndex(0);
+    }
+  };
 
   // remove image
   const removeImage = (index) => {
@@ -95,14 +95,14 @@ const ImageUpload = () => {
         <div className="border-2 border-dashed border-gray-400 rounded-xl p-6 flex flex-col gap-2 text-center items-center mb-4">
           <p className="font-semibold">Upload Product Images</p>
           <p className="text-sm text-gray-500">Minimum 4 images required</p>
-<div className="border w-fit p-2 border-orange-700">
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImages}
-            className="ml-25 cursor-pointer text-orange-700"
-          />
+          <div className="border w-fit p-2 border-orange-700">
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImages}
+              className="ml-25 cursor-pointer text-orange-700"
+            />
           </div>
 
           <p className="mt-2 text-sm">
@@ -122,11 +122,10 @@ const ImageUpload = () => {
               <img
                 src={URL.createObjectURL(img)}
                 alt=""
-                className={`h-32 w-full object-cover rounded-lg border-2 ${
-                  mainIndex === index
+                className={`h-32 w-full object-cover rounded-lg border-2 ${mainIndex === index
                     ? "border-green-500"
                     : "border-gray-300"
-                }`}
+                  }`}
                 onClick={() => setMainIndex(index)}
               />
 
