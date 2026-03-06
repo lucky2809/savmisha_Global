@@ -70,8 +70,8 @@ function Navbar() {
         </div>
         <div className='w-full flex lg:flex-col flex-row items-center  justify-between gap-12'>
           {/* Logo */}
-          <div className='lg:w-70 w-40'>
-            <img className='w-full h-full object-contain' src="logo1.png" alt="logo" />
+          <div className='lg:w-20 w-13'>
+            <img className='w-full h-full object-contain' src="logo02.png" alt="logo" />
           </div>
 
           {/* Desktop Menu */}
