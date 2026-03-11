@@ -21,7 +21,7 @@ function Login() {
   const [show, setShow] = useState(false)
   const [loading, setLoading] = useState(false)
 
-//   const { setUser } = useUserStore()
+  //   const { setUser } = useUserStore()
   const { setAuth } = useUserStore.getState()
 
   const signInHandler = async (e) => {
@@ -91,7 +91,7 @@ function Login() {
             // if (role === "admin") {
             //   navigate("/")
             // } else {
-              navigate("/")
+            navigate("/")
             // }
 
           } catch (err) {
@@ -127,20 +127,23 @@ function Login() {
       setLoading(false)
     }
   }
-  console.log("token", )
+  console.log("token",)
 
   return (
     <div
-      className='w-full min-h-screen flex items-center justify-center bg-cover'
-      style={{ backgroundImage: `url(${bgimgurl}login.png)` }}
+      className="w-full min-h-screen flex items-center justify-center bg-cover"
+      style={{
+        backgroundImage:
+          window.innerWidth >= 768 ? `url(${bgimgurl}login.png)` : "none",
+      }}
     >
 
       <ToastContainer position="top-right" autoClose={2500} />
 
-      <div className='w-full max-w-4xl bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2'>
+      <div className='w-full mx-4 lg:mx-0 max-w-4xl bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2'>
 
         {/* LEFT */}
-        <div className='flex flex-col justify-center items-center p-8'>
+        <div className='flex flex-col justify-center items-center p-4 lg:p-8'>
 
           <div className='flex flex-col items-center'>
             <img className='w-20' src="logo02.png" alt="logo" />
@@ -195,7 +198,7 @@ function Login() {
             {/* OPTIONS */}
             <div className='flex justify-between items-center text-sm'>
               <div className='flex gap-2 items-center'>
-                <input type="checkbox" />
+                <input className='text-gray-300' type="checkbox" />
                 <span className='text-gray-600'>Keep me logged in</span>
               </div>
 

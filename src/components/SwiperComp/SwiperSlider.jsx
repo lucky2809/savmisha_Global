@@ -1,16 +1,22 @@
-import React from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-import { Autoplay, Pagination, Navigation } from 'swiper/modules';
-// import AboutSecurity from "../JsonDataFile/Security.json"
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 
 function SwiperSlider() {
-
   return (
-    <div className='  '>
+    <div className="p-20">
+      <div className="relative w-full">
+
+      {/* Left Button */}
+      <div className="swiper-button-prev !w-10 !h-10  text-white rounded-full flex items-center justify-center hover:bg-black transition"></div>
+
+      {/* Right Button */}
+      <div className="swiper-button-next !w-10 !h-10 text-white rounded-full flex items-center justify-center hover:bg-black transition"></div>
+
       <Swiper
         spaceBetween={30}
         centeredSlides={true}
@@ -18,49 +24,35 @@ function SwiperSlider() {
           delay: 3500,
           disableOnInteraction: false,
         }}
-        pagination={{
-          clickable: true,
+        pagination={{ clickable: true }}
+        navigation={{
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
         }}
-        navigation={true}
         modules={[Autoplay, Pagination, Navigation]}
-        className="mySwiper "
+        className="mySwiper"
       >
         <SwiperSlide>
-          <div className='h-[500px]'>
-            <img className=' h-full w-full object-cover' src='about.png' />
+          <div className="p-">
+            <img className="h-full w-full object-cover" src="swipper1.png" />
           </div>
         </SwiperSlide>
 
         <SwiperSlide>
-          <img className='h-[500px] w-full object-cover' src='about.png' />
+          <div className="p-">
+            <img className="h-full w-full object-cover" src="swipper2.png" />
+          </div>
         </SwiperSlide>
+
         <SwiperSlide>
-          <img className='h-[500px] w-full object-cover' src='about.png' />
+          <div className="p-">
+            <img className="h-full w-full object-cover" src="swipper1.png" />
+          </div>
         </SwiperSlide>
-
-
       </Swiper>
-      {/* <div className='about-security  px-5 flex justify-around pb-1 bg-amber-50'>
-        {
-          AboutSecurity.aboutSecurity.map((data) =>{
-            return (
-              <span className='flex  items-center my-2 px-4 bg-white  rounded-md '>
-              <div className='img '></div> <img className='h-14 object-cover' src={data.img} /> 
-
-                <p className='font-semibold text-md flex gap-1 items-center'>
-                  <span>{data.paragraph}</span>
-                  <span className='text-[14px]'>{data.paragraph2}</span>
-
-                </p>
-      
-              </span>
-            )
-          })
-        }
-       
-      </div> */}
     </div>
-  )
+    </div>
+  );
 }
 
 export default SwiperSlider;

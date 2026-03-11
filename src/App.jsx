@@ -14,6 +14,9 @@ import AllUser from './components/Admin/AllUser'
 import About from './components/pages/About'
 import Contact from './components/pages/Contact'
 import BulkImageUpload from './components/Admin/BulkImageUpload'
+import UpdateProductImages from './components/Admin/UpdateProductImages'
+import AllProducts from './components/pages/AllProducts'
+import Test from './components/pages/test'
 // import Shop from './components/pages/Shop'
 
 function App() {
@@ -45,11 +48,14 @@ function App() {
           <ScrollToTop />
           <Routes>
             <Route path='/' element={<Home />} />
+            <Route path='/products' element={<AllProducts />} />
             {/* <Route path='/shop' element={<Shop />} /> */}
             <Route path='/login' element={<PublicRoute><Login /></PublicRoute>} />
             <Route path='/signup' element={<Signup />} />
             <Route path='/about' element={<About />} />
             <Route path='/contact' element={<Contact />} />
+            <Route path='/test' element={<Test />} />
+            {/* <Route path="updateproductimages/:id" element={<ProtectedRoute><UpdateProductImages /></ProtectedRoute>} />       Image Update */}
             {/* <Route path='/imageupload' element={
             // <ProtectedRoute>
               <ImageUpload />
@@ -58,7 +64,9 @@ function App() {
             <Route path="/dashboard" element={<ProtectedRoute><DashboardRoot /></ProtectedRoute>}>
               <Route path="upload" element={<ImageUpload />} />   {/* Image Upload */}
               <Route path="users" element={<AllUser />} />       {/* All Users */}
-              <Route path="bulkImagepload" element={<BulkImageUpload />} />       {/* All Users */}
+              <Route path="bulkImagepload" element={<BulkImageUpload />} />       {/* Bulk Image Upload */}
+              <Route path="updateproductimages/:id" element={<ProtectedRoute><UpdateProductImages /></ProtectedRoute>} />       {/* Image Update */}
+
             </Route>
           </Routes>
         </AuthProvider>

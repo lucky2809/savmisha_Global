@@ -21,7 +21,7 @@ function Contact({margin = "mt-60"}) {
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <h1 className='text-2xl max-lg:text-2xl font-semibold'>Location:</h1>
-                                <p className='text-[#f59e7b] text-sm'>C 213 Trans Yamuna Colony Near Hariom Tvs agra 282006</p>
+                                <p className='text-[#f59e7b] text-sm'>C-13 HARI ENCLAVE-1 KIRARI SULEMAN NAGAR DELHI</p>
                             </div>
                         </div>
                         <div className='flex gap-4 items-center'>
@@ -30,7 +30,7 @@ function Contact({margin = "mt-60"}) {
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <h1 className='text-2xl max-lg:text-2xl font-semibold'>Email:</h1>
-                                <a href={`mailto:${import.meta.env.VITE_APP_CONTACT_EMAIL}`} ><p className='text-[#f59e7b] text-sm'>contact@ryuteck.com</p></a>
+                                <a href={`mailto:${import.meta.env.VITE_APP_CONTACT_EMAIL}`} ><p className='text-[#f59e7b] text-sm'>savmishaglobaltrends@gmail.com</p></a>
                             </div>
                         </div>
                         <div className=' flex gap-4 items-center'>
@@ -40,8 +40,8 @@ function Contact({margin = "mt-60"}) {
                             <div className='flex flex-col gap-1'>
                                 <h1 className='text-2xl max-lg:text-2xl font-semibold'>Call:</h1>
                                 <div className='flex max-lg:flex-col text-sm'>
-                                    <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER1}`}> <p className='text-[#f59e7b]'>+91 9389031488,</p></a>
-                                    <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER2}`}><p className='text-[#f59e7b]'>+91 8979638699</p></a>
+                                    <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER1}`}> <p className='text-[#f59e7b]'>+91 9560941936,</p></a>
+                                    <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER2}`}><p className='text-[#f59e7b]'>+91 9911664845</p></a>
                                 </div>
                             </div>
                         </div>

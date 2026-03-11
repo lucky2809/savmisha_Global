@@ -55,34 +55,44 @@ function Navbar() {
         ${show ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}
       `}
     >
-      <div className='flex py-5 px-2 md:px-10 lg:px-10 lg:py-10 gap-2 md:gap-5'>
+      <div className='flex pb-4  px-2 md:px-10 lg:px-20 gap-2 md:gap-5'>
         <div className='hidden lg:flex lg:flex-col justify-center gap-5 items-center lg:visible'>
           <div className='border border-white hover:border-black p-2 rounded-full cursor-pointer'><a
-            href="https://www.instagram.com/"
+            href="https://www.instagram.com/savmisha_global_trends?igsh=MW5pZmZobnY2Y2FxOQ=="
             target="_blank"
             rel="noopener noreferrer"
             className="hover:scale-110 transition-transform"
           ><Icon className='text-black' icon="line-md:instagram" width="26" /></a></div>
           <div className='border border-white hover:border-black p-2 rounded-full cursor-pointer'><a
-            href="mailto:savmishaglobaltrends@gmail.com"
+            href={`mailto:${import.meta.env.VITE_APP_CONTACT_EMAIL}`}
             className="hover:scale-110 transition-transform"
           ><Icon className='text-black' icon="fluent-mdl2:edit-mail" width="26" /></a></div>
         </div>
-        <div className='w-full flex lg:flex-col flex-row items-center  justify-between gap-12'>
+        <div className='w-full flex lg:flex-col flex-row items-center  justify-between gap-1'>
           {/* Logo */}
-          <div className='lg:w-20 w-13'>
+          <div className='lg:w-55 w-30'>
             <img className='w-full h-full object-contain' src="logo02.png" alt="logo" />
           </div>
 
           {/* Desktop Menu */}
           <div className='hidden lg:flex lg:visible'>
-            <ul className='lg:flex lg:flex-wrap justify-center lg:gap-5 gap-7 font-DynaPuff text-lg'>
+            <ul className='lg:flex lg:flex-wrap justify-center lg:gap-5 gap-7  text-md font-semibold'>
 
               <li className='cursor-pointer transition'>
                 <Link
                   to="/"
                   className={`pb-1 transition hover:text-gray-500
                 ${isActive('/') ? 'border-b-2 border-black' : 'border-b-2 border-transparent'}`}
+                >
+                  HOME
+                </Link>
+              </li>
+
+              <li className='cursor-pointer transition'>
+                <Link
+                  to="/products"
+                  className={`pb-1 transition hover:text-gray-500
+                ${isActive('/products') ? 'border-b-2 border-black' : 'border-b-2 border-transparent'}`}
                 >
                   PRODUCTS
                 </Link>
@@ -109,7 +119,7 @@ function Navbar() {
               </li>
 
               <li className='cursor-pointer transition'>
-                <Profile/>
+                <Profile />
               </li>
 
             </ul>
@@ -121,7 +131,7 @@ function Navbar() {
                         <Profile />
                     </div> */}
           <div className='border border-white hover:border-black p-2 rounded-full cursor-pointer'>
-            <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER}`}><Icon className='text-black' icon="ion:call-sharp" width="24" /></a>
+            <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER2}`}><Icon className='text-black' icon="ion:call-sharp" width="24" /></a>
 
           </div>
           <div>
@@ -138,7 +148,7 @@ function Navbar() {
           </div>
         </div>
         <div className='lg:hidden flex items-center'>
-          <Profile/>
+          <Profile />
         </div>
         {/* Hamburger / Cross Button */}
         <div className=" lg:hidden flex items-center">
@@ -183,6 +193,16 @@ function Navbar() {
               to="/"
               onClick={() => setOpen(false)}
               className={`${isActive('/') ? 'border-b-2 border-black' : ''}`}
+            >
+              HOME
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/products"
+              onClick={() => setOpen(false)}
+              className={`${isActive('/products') ? 'border-b-2 border-black' : ''}`}
             >
               PRODUCTS
             </Link>

@@ -17,7 +17,7 @@ function Footer() {
                             We are ready to bring your designs to life.
                         </p>
                         <a
-                            href="mailto:info@savmishaglobaltrends.com"
+                            href={`mailto:${import.meta.env.VITE_APP_CONTACT_EMAIL}`}
                             className="inline-block bg-[#f59e7b] text-white hover:bg-white hover:text-[#f59e7b] border border-[#f59e7b] px-8 py-3 rounded-full font-semibold transition"
                         >
                             Email Us
