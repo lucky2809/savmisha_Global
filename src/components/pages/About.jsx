@@ -1,3 +1,4 @@
+import Footer from "../navComp/Footer";
 import Navbar from "../navComp/Navbar";
 import Contact from "./Contact";
 
@@ -6,7 +7,7 @@ const About = () => {
     return (
         <div>
             <Navbar />
-            <div className="pt-57 font-[Poppins]  text-gray-800 leading-relaxed">
+            <div className="mt-20 lg:mt-40  text-gray-800 leading-relaxed">
 
                 {/* HERO SECTION */}
                 <section
@@ -16,7 +17,7 @@ const About = () => {
                             `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('about.png')`,
                     }}
                 >
-                    <div className="max-w-3xl px-6">
+                    <div className="max-w-3xl px-4 lg:px-6 ">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">
                             Crafting Quality. Stitching Trust.
                         </h1>
@@ -33,7 +34,7 @@ const About = () => {
                 </section>
 
                 {/* ABOUT SECTION */}
-                <section className="py-20 px-6">
+                <section className="lg:py-20 p-6">
                     <div className="max-w-5xl mx-auto text-center">
                         <h2 className="text-3xl md:text-4xl font-bold mb-6">Who We Are</h2>
                         <p className="text-lg text-gray-600">
@@ -50,7 +51,7 @@ const About = () => {
                 </section>
 
                 {/* MISSION & VISION */}
-                <section className="py-20 bg-gray-100 px-6">
+                <section className="lg:py-20 bg-gray-100 p-6">
                     <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
                         <div className="bg-white p-8 rounded-xl shadow">
                             <h3 className="text-2xl font-semibold mb-4">Our Mission</h3>
@@ -74,9 +75,9 @@ const About = () => {
                 </section>
 
                 {/* WHY CHOOSE US */}
-                <section className="py-20 px-6">
+                <section className="lg:py-20 p-6">
                     <div className="max-w-5xl mx-auto text-center">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-8">
+                        <h2 className="text-2xl lg:text-4xl font-bold mb-8">
                             Why Choose SAVMISHA GLOBAL TRENDS
                         </h2>
                         <ul className="max-w-xl mx-auto space-y-4 text-left">
@@ -92,7 +93,7 @@ const About = () => {
                                     key={i}
                                     className="bg-gray-100 p-4 rounded-lg"
                                 >
-                                    ✔ {item}
+                                    <span className=''>●</span> {item}
                                 </li>
                             ))}
                         </ul>
@@ -100,7 +101,7 @@ const About = () => {
                 </section>
 
                 {/* COMPANY STATS */}
-                <section className="py-20 bg-gray-50 px-6">
+                <section className="lg:py-20 bg-gray-50 p-6">
                     <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                         {[
                             { label: "Clients", value: "17+" },
@@ -125,7 +126,7 @@ const About = () => {
                 </section>
 
                 {/* MANUFACTURING PROCESS */}
-                <section className="py-20 px-6">
+                <section className="lg:py-20 p-6">
                     <div className="max-w-6xl mx-auto text-center">
                         <h2 className="text-3xl md:text-4xl font-bold mb-10">
                             Our Manufacturing Process
@@ -148,17 +149,127 @@ const About = () => {
                         </div>
                     </div>
                 </section>
-                <div className="w-full flex text-center justify-center py-15 bg-gray-200">
+
+                {/* Section 1 */}
+                <section className="max-w-7xl mx-auto lg:py-20 p-6 grid md:grid-cols-2 gap-12 items-center">
+
+                    <img
+                        src="about3.png"
+                        className="rounded-xl shadow-lg"
+                        alt="Garment factory"
+                    />
+
+                    <div>
+                        <h2 className="text-4xl font-bold mb-6">
+                            About Our Clothing Manufacturing
+                        </h2>
+
+                        <p className="text-gray-600 text-lg leading-relaxed">
+                            We are a trusted clothing manufacturing company dedicated to producing
+                            high-quality garments for brands, wholesalers, and exporters. Our
+                            mission is to combine creativity, craftsmanship, and modern
+                            manufacturing techniques to deliver premium apparel that meets global
+                            fashion standards. From design to production, our team ensures every
+                            garment reflects quality, durability, and style.
+                        </p>
+                    </div>
+                </section>
+
+
+                {/* Section 2 */}
+                <section className="bg-white">
+                    <div className="max-w-7xl mx-auto lg:py-20 p-6 grid md:grid-cols-2 gap-12 items-center">
+
+                        <div>
+                            <h2 className="text-4xl font-bold mb-6">
+                                Our Manufacturing Strength
+                            </h2>
+
+                            <p className="text-gray-600 text-lg leading-relaxed">
+                                Our manufacturing unit is equipped with advanced sewing machines,
+                                professional tailoring teams, and strict quality control systems.
+                                Every stage of the production process — from fabric sourcing to
+                                stitching, finishing, and packaging — is carefully monitored to
+                                ensure consistency and perfection. This allows us to handle both
+                                small custom orders and large-scale bulk production efficiently.
+                            </p>
+                        </div>
+
+                        <img
+                            src="about2.png"
+                            className="rounded-xl shadow-lg"
+                            alt="Garment production"
+                        />
+                    </div>
+                </section>
+
+
+                <div className="w-full flex text-center justify-center lg:py-15 bg-gray-200">
                     <div className="p-6">
-                        <p className="text-6xl font-bold text-yellow-600 mb-2">
+                        <p className="text-3xl lg:text-6xl font-bold text-yellow-600 mb-2">
                             Factory Types
                         </p>
-                        <p className="text-gray-600 text-xl">Textile, Garments, Bedsheets, Bags</p>
+                        <p className="text-gray-600 text-lg lg:text-xl">Textile, Garments, Bedsheets, Bags</p>
                     </div>
                 </div>
 
+
+                {/* Section 3 */}
+                <section className="max-w-7xl mx-auto lg:py-20 p-6 grid md:grid-cols-2 gap-12 items-center">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09"
+                        className="rounded-xl shadow-lg"
+                        alt="Delhi city"
+                    />
+
+                    <div>
+                        <h2 className="text-4xl font-bold mb-6">
+                            Our Location & Global Reach
+                        </h2>
+
+                        <p className="text-gray-600 text-lg leading-relaxed">
+                            Our company operates from the vibrant business hub of
+                            <span className="font-semibold"> New Delhi, India</span>.
+                            Being located in one of the country’s major textile and fashion
+                            centers allows us to access premium fabrics, skilled artisans,
+                            and efficient logistics networks. This strategic location enables
+                            us to deliver high-quality garments to clients across India and
+                            international markets with speed and reliability.
+                        </p>
+                    </div>
+                </section>
+
+
+                {/* Section 4 */}
+                <section className="bg-gray-900 text-white">
+                    <div className="max-w-7xl mx-auto lg:py-20 p-6 grid md:grid-cols-2 gap-12 items-center">
+
+                        <div>
+                            <h2 className="text-4xl font-bold mb-6">
+                                Our Commitment to Quality
+                            </h2>
+
+                            <p className="text-gray-300 text-lg leading-relaxed">
+                                We believe in building long-term partnerships with our clients by
+                                delivering garments that meet the highest standards of quality and
+                                craftsmanship. Whether you are starting a new fashion brand or
+                                expanding an established clothing business, our team is committed
+                                to turning your ideas into beautifully crafted apparel that your
+                                customers will love.
+                            </p>
+                        </div>
+
+                        <img
+                            src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f"
+                            className="rounded-xl shadow-lg"
+                            alt="Clothing products"
+                        />
+                    </div>
+                </section>
+
                 {/* LEADERSHIP */}
-                <section className="py-20 bg-gray-100 px-6">
+                <section className="lg:py-20 bg-gray-100 p-6">
                     <div className="max-w-6xl mx-auto text-center">
                         <h2 className="text-3xl md:text-4xl font-bold mb-10">
                             Our Leadership
@@ -189,7 +300,7 @@ const About = () => {
                     </div>
                 </section>
                 <div>
-                    <Contact margin={"mt-20"} />
+                    <Footer />
                 </div>
                 {/* CONTACT */}
                 {/* <section

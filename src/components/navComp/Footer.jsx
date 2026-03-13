@@ -6,7 +6,7 @@ function Footer() {
       {/* CONTACT */}
                 <section
                     id="contact"
-                    className="py-20 bg-gray-200 text-center px-6"
+                    className="lg:py-20 bg-gray-200 text-center p-6"
                 >
                     <div className="max-w-4xl mx-auto">
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">

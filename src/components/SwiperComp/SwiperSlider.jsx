@@ -8,14 +8,14 @@ import "swiper/css/navigation";
 
 function SwiperSlider() {
   return (
-    <div className="p-20">
+    <div className="lg:px-20">
       <div className="relative w-full">
 
       {/* Left Button */}
-      <div className="swiper-button-prev !w-10 !h-10  text-white rounded-full flex items-center justify-center hover:bg-black transition"></div>
+      <div className="swiper-button-prev !w-5 !h-5 lg:!w-10 lg:!h-10  text-white rounded-full flex items-center justify-center hover:bg-black transition"></div>
 
       {/* Right Button */}
-      <div className="swiper-button-next !w-10 !h-10 text-white rounded-full flex items-center justify-center hover:bg-black transition"></div>
+      <div className="swiper-button-next !w-5 !h-5 lg:!w-10 lg:!h-10  text-white rounded-full flex items-center justify-center hover:bg-black transition"></div>
 
       <Swiper
         spaceBetween={30}

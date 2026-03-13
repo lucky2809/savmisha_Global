@@ -10,20 +10,20 @@ function Home() {
   return (
     <div>
       <div><Navbar /></div>
-      <div className='pt-22 lg:pt'>
+      <div className='mt-20 lg:mt-40'>
         <div><SwiperSlider /></div>
 
-        <div className='flex flex-col max-lg:text-center gap-8 px-20'>
-          <p className='md:text-7xl lg:text-8xl max-sm:text-4xl font-bold'><span className='text-9xl'>India’s </span> Trusted Clothing Manufacturing Partner</p>
-          <p className='text-xl text-gray-400 font-semibold w-[90%]'>Located in Delhi, the hub of India’s garment industry, we produce high-quality apparel with advanced technology and expert craftsmanship, serving brands and businesses across the country.</p>
+        <div className='flex flex-col gap-4 lg:gap-8 lg:px-20 px-5'>
+          <p className='md:text-7xl lg:text-8xl text-2xl font-bold'><span className='text-5xl lg:text-9xl'>India’s </span> Trusted Clothing Manufacturing Partner</p>
+          <p className='text-sm lg:text-xl text-gray-400 font-semibold lg:w-[90%]'>Located in Delhi, the hub of India’s garment industry, we produce high-quality apparel with advanced technology and expert craftsmanship, serving brands and businesses across the country.</p>
         </div>
 
-        <div className='h-full w-full p-5'>
-          <div className=" w-full text-center p-7">
-            <p className="text-lg lg:text-4xl font-bold">Our Products</p>
+        <div className='h-full w-full lg:p-7'>
+          <div className=" w-full text-center p-4 lg:p-7">
+            <p className="text-2xl lg:text-4xl font-bold">Our Products</p>
           </div>
-          <div className='flex flex-col lg:flex-row gap-5 lg:gap-10 p-5 lg:p-15'>
-            <div className=' grid grid-cols-2 w-full gap-5 lg:gap-10 h-full'>
+          <div className='flex flex-col lg:flex-row gap-7 lg:gap-10 p-5 lg:p-15'>
+            <div className=' grid grid-cols-2 w-full gap-7 lg:gap-10 h-full'>
               <div>
                 <img className='w-full h-full object-cover' src="01.png" alt="" />
                 <p>Men's Wear</p>
@@ -91,13 +91,33 @@ function Home() {
 
 
         <div className=" w-full text-center p-5 lg:p-15">
-          <p className=" text-lg lg:text-4xl font-semibold">Latest Products</p>
+          <p className=" text-2xl lg:text-4xl font-semibold">Latest Products</p>
         </div>
         <div className='w-full h-full'><AllImage pageNo={1} limit={4} /></div>
 
+
+        {/* About Company */}
+        <div className='lg:p-20 lg:py-10 p-5'>
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">
+            About Savmisha Global Trends
+          </h2>
+          <p className="text-gray-600 leading-relaxed">
+            Savmisha Global Trends is a trusted clothing manufacturer based in
+            Delhi, India, dedicated to producing high-quality garments for both
+            domestic and international markets. Our company focuses on
+            delivering reliable textile and apparel manufacturing solutions
+            while maintaining strict quality standards. With skilled
+            professionals, modern production techniques, and a commitment to
+            excellence, Savmisha Global Trends works closely with brands and
+            businesses to provide durable, stylish, and well-crafted clothing
+            products.
+          </p>
+        </div>
+
+
         {/* ABOUT SECTION */}
-        <section className="p-20 bg-white">
-          <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+        <section className="lg:p-20 bg-white p-5">
+          <div className="max-w-7xl lg:px-6 mx-auto grid md:grid-cols-2 gap-12 items-center">
 
             <img
               src="manufacture2.png"
@@ -126,7 +146,7 @@ function Home() {
 
 
         {/* COMPANY STATS */}
-        <section className="py-20 bg-gray-50 px-6">
+        <section className="lg:py-20 p-5 bg-gray-50">
           <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
               { label: "Clients", value: "17+" },
@@ -151,8 +171,8 @@ function Home() {
         </section>
 
         {/* FACTORY GALLERY */}
-        <section className="p-20 bg-gray-100">
-          <div className="max-w-7xl mx-auto px-6">
+        <section className="p-5 lg:p-20 bg-gray-100">
+          <div className="max-w-7xl mx-auto lg:px-6">
 
             <h2 className="text-3xl font-bold text-center mb-12">
               Our Factory
@@ -161,17 +181,17 @@ function Home() {
             <div className="grid md:grid-cols-3 gap-6">
 
               <img
-                src="https://images.unsplash.com/photo-1503342452485-86cfd1c7a5df"
+                src="factory1.png"
                 className="rounded-lg"
               />
 
               <img
-                src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2"
+                src="factory2.png"
                 className="rounded-lg"
               />
 
               <img
-                src="https://images.unsplash.com/photo-1520975682031-a1cfe0c3a83d"
+                src="factory3.png"
                 className="rounded-lg"
               />
 
@@ -181,8 +201,8 @@ function Home() {
         </section>
 
         {/* SUSTAINABILITY */}
-        <section className="p-20 bg-green-50">
-          <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+        <section className="p-5 lg:p-20 bg-green-50">
+          <div className="max-w-7xl mx-auto lg:px-6 grid md:grid-cols-2 gap-12 items-center">
 
             <img
               src="manufacture.png"
@@ -210,7 +230,7 @@ function Home() {
           </div>
         </section>
 
-        <div className=''><Contact margin={"mt-10"} /></div>
+        <div className=''><Contact margin={"mt-15"} active='hidden' /></div>
       </div>
     </div>
   )

@@ -58,7 +58,7 @@ function Navbar() {
       <div className='flex pb-4  px-2 md:px-10 lg:px-20 gap-2 md:gap-5'>
         <div className='hidden lg:flex lg:flex-col justify-center gap-5 items-center lg:visible'>
           <div className='border border-white hover:border-black p-2 rounded-full cursor-pointer'><a
-            href="https://www.instagram.com/savmisha_global_trends?igsh=MW5pZmZobnY2Y2FxOQ=="
+            href={`${import.meta.env.VITE_APP_INSTAGRAM_LINK}`}
             target="_blank"
             rel="noopener noreferrer"
             className="hover:scale-110 transition-transform"
@@ -76,7 +76,7 @@ function Navbar() {
 
           {/* Desktop Menu */}
           <div className='hidden lg:flex lg:visible'>
-            <ul className='lg:flex lg:flex-wrap justify-center lg:gap-5 gap-7  text-md font-semibold'>
+            <ul className='lg:flex lg:flex-wrap justify-center text-center lg:gap-5 gap-7  text-md font-semibold'>
 
               <li className='cursor-pointer transition'>
                 <Link
@@ -104,7 +104,7 @@ function Navbar() {
                   className={`pb-1 transition hover:text-gray-500
                 ${isActive('/contact') ? 'border-b-2 border-black' : 'border-b-2 border-transparent'}`}
                 >
-                  CONTACT
+                  CONTACT US
                 </Link>
               </li>
 
@@ -114,7 +114,7 @@ function Navbar() {
                   className={`pb-1 transition hover:text-gray-500
                 ${isActive('/about') ? 'border-b-2 border-black' : 'border-b-2 border-transparent'}`}
                 >
-                  ABOUT
+                  ABOUT US
                 </Link>
               </li>
 
@@ -214,7 +214,7 @@ function Navbar() {
               onClick={() => setOpen(false)}
               className={`${isActive('/contact') ? 'border-b-2 border-black' : ''}`}
             >
-              CONTACT
+              CONTACT US
             </Link>
           </li>
 
@@ -224,7 +224,7 @@ function Navbar() {
               onClick={() => setOpen(false)}
               className={`${isActive('/about') ? 'border-b-2 border-black' : ''}`}
             >
-              ABOUT
+              ABOUT US
             </Link>
           </li>
           <div className='w-full flex justify-center gap-8 items-center pt-10'>
