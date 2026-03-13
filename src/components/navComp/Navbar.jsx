@@ -51,7 +51,7 @@ function Navbar() {
     <div
       className={`
         fixed top-0 left-0 w-full z-50
-        transition-all duration-500 ease-in-out bg-white
+        transition-all duration-500 ease-in-out bg-white shadow-sm shadow-amber-100
         ${show ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}
       `}
     >

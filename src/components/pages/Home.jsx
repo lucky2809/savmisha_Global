@@ -5,16 +5,57 @@ import ImageUpload from '../Admin/ImageUpload'
 import Contact from './Contact'
 import Footer from '../navComp/Footer'
 import SwiperSlider from '../SwiperComp/SwiperSlider'
+import { useNavigate } from 'react-router-dom'
 
 function Home() {
+
+  const navigate = useNavigate()
   return (
     <div>
       <div><Navbar /></div>
-      <div className='mt-20 lg:mt-40'>
-        <div><SwiperSlider /></div>
+      <div className='mt-20 lg:mt-39'>
+        {/* <div><SwiperSlider /></div> */}
+
+
+        <section className="w-full">
+          <div className="w-full p-5 lg:p-10 lg:px-20 flex flex-col lg:flex-row justify-between gap-10">
+
+            {/* Hero Text */}
+            <div className='lg:w-[50%]'>
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+                Premium Clothing <span className="text-[#f59e7b]">Manufacturing </span>
+                for Modern Fashion Brands
+              </h1>
+
+              <p className="mt-6 text-gray-600 text-lg">
+                Have a clothing idea or fashion brand in mind? Our manufacturing experts are ready to transform your designs into high-quality garments that customers love.
+              </p>
+
+              <div className="mt-8 flex gap-4">
+                <button onClick={() => navigate('/contact')} className="bg-[#f59e7b] text-white p-3 lg:px-6 lg:py-3 rounded-lg border hover:border-[#f59e7b] hover:bg-white hover:text-[#f59e7b] transition cursor-pointer">
+                  Get a Quote
+                </button>
+
+                <button onClick={() => navigate('/products')} className="p-3 lg:px-6 lg:py-3 rounded-lg hover:bg-gray-200 transition border border-[#f59e7b] text-[#f59e7b] cursor-pointer">
+                  View Products
+                </button>
+              </div>
+            </div>
+
+            {/* Hero Image */}
+            <div className='lg:w-[30%] '>
+              <img
+                src="hero.png"
+                alt="Clothing Manufacturing"
+                className="w-full h-full object-cover rounded-2xl shadow-lg"
+              />
+            </div>
+
+          </div>
+        </section>
 
         <div className='flex flex-col gap-4 lg:gap-8 lg:px-20 px-5'>
-          <p className='md:text-7xl lg:text-8xl text-2xl font-bold'><span className='text-5xl lg:text-9xl'>India’s </span> Trusted Clothing Manufacturing Partner</p>
+          <p className='md:text-7xl lg:text-8xl text-2xl font-bold'><span className='text-4xl lg:text-9xl'>India’s </span> Trusted Clothing Manufacturing Partner</p>
           <p className='text-sm lg:text-xl text-gray-400 font-semibold lg:w-[90%]'>Located in Delhi, the hub of India’s garment industry, we produce high-quality apparel with advanced technology and expert craftsmanship, serving brands and businesses across the country.</p>
         </div>
 
