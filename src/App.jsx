@@ -17,6 +17,8 @@ import BulkImageUpload from './components/Admin/BulkImageUpload'
 import UpdateProductImages from './components/Admin/UpdateProductImages'
 import AllProducts from './components/pages/AllProducts'
 import Test from './components/pages/test'
+import ForgotPasswordFlow from './components/ForgetPassword/ForgetPasswordFlow'
+
 // import Shop from './components/pages/Shop'
 
 function App() {
@@ -53,6 +55,7 @@ function App() {
             <Route path='/login' element={<PublicRoute><Login /></PublicRoute>} />
             <Route path='/signup' element={<Signup />} />
             <Route path='/about' element={<About />} />
+            <Route path='/forgetpassword' element={<ForgotPasswordFlow />} />
             <Route path='/contact' element={<Contact />} />
             <Route path='/test' element={<Test />} />
             {/* <Route path="updateproductimages/:id" element={<ProtectedRoute><UpdateProductImages /></ProtectedRoute>} />       Image Update */}

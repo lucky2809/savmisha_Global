@@ -40,11 +40,9 @@ const ResetPassword = ({ email }) => {
   };
 
   return (
-    <div className='main-charecter flex flex-col max-lg:px-5 justify-center h-screen items-center'
-
-    >
-      <div className='w-40 p-2 shadow-xl'>
-        <img className='h-full w-full' src="dostcabyello.svg" alt="" srcset="" />
+    <div className='main-charecter flex flex-col justify-center items-center h-screen w-full p-5 gap-10 bg-gray-100'>
+      <div className='w-30 lg:w-60 p-2'>
+        <img className='h-full w-full' src="logo02.png" alt="" srcset="" />
       </div>
       <div className="p-4 max-w-md mx-auto rounded-xl bg-white">
         <h2 className="text-xl font-bold mb-4">Set New Password</h2>
@@ -78,7 +76,7 @@ const ResetPassword = ({ email }) => {
         <button
           onClick={handleReset}
           disabled={isSubmitting}
-          className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+          className="bg-[#f07f52] hover:bg-[#f09d7d]  text-white px-4 py-2 rounded w-full cursor-pointer"
         >
           {isSubmitting ? 'Resetting...' : 'Reset Password'}
         </button>

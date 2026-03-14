@@ -48,11 +48,11 @@ const EmailOtpVerification = ({ onVerified, prefilledEmail }) => {
   };
 
   return (
-    <div className='main-charecter flex flex-col justify-center items-center h-screen border-1 w-full gap-10 bg-gray-100'>
-      <div className='w-40 p-2 shadow-xl'>
-        <img className='h-full w-full' src="dostcabyello.svg" alt="" srcset="" />
+    <div className='main-charecter flex flex-col justify-center items-center h-screen w-full p-5 gap-10 bg-gray-100'>
+      <div className='w-30 lg:w-60 p-2'>
+        <img className='h-full w-full' src="logo02.png" alt="" srcset="" />
       </div>
-      <div className="p-4 max-w-md mx-auto rounded-xl bg-white">
+      <div className="p-5 max-w-md mx-auto rounded-xl bg-white">
       <h2 className="text-xl font-bold mb-4">Reset Password</h2>
 
       <input
@@ -68,7 +68,7 @@ const EmailOtpVerification = ({ onVerified, prefilledEmail }) => {
         <button
           onClick={handleSendOtp}
           disabled={isLoading}
-          className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+          className="bg-[#f07f52] hover:bg-[#f09d7d] text-white px-4 py-2 rounded w-full cursor-pointer"
         >
           {isLoading ? 'Sending OTP...' : 'Send OTP'}
         </button>
@@ -86,7 +86,7 @@ const EmailOtpVerification = ({ onVerified, prefilledEmail }) => {
           <button
             onClick={handleVerifyOtp}
             disabled={isLoading}
-            className="bg-green-600 text-white px-4 py-2 rounded w-full"
+            className="bg-green-600 text-white px-4 py-2 rounded w-full cursor-pointer"
           >
             {isLoading ? 'Verifying...' : 'Verify OTP'}
           </button>

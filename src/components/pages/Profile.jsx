@@ -109,7 +109,7 @@ const handleLogout = () => {
       ) : (
         <div
           onClick={() => navigate("/login")}
-          className="cursor-pointer border text-lg px-2 bg-black text-white md:border md:px-3 md:py-1 lg:bg-none lg:border-none lg:bg-white lg:text-black lg:p-0 "
+          className="cursor-pointer border text-md px-2 bg-black text-white md:border md:px-3 md:py-1 lg:bg-none lg:border-none lg:bg-white lg:text-black lg:p-0 "
         >
           LOGIN
         </div>
