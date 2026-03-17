@@ -22,7 +22,7 @@ function Home() {
 
             {/* Hero Text */}
             <div className='lg:w-[50%]'>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-4xl lg:text-5xl 2xl:text-7xl  font-bold text-gray-900 leading-tight">
                 Premium Clothing <span className="text-[#f59e7b]">Manufacturing </span>
                 for Modern Fashion Brands
               </h1>
@@ -61,7 +61,7 @@ function Home() {
 
         <div className='h-full w-full lg:p-7'>
           <div className=" w-full text-center p-4 lg:p-7">
-            <p className="text-2xl lg:text-4xl font-bold">Our Products</p>
+            <p className="text-2xl lg:text-4xl 2xl:text-5xl font-bold">Our Products</p>
           </div>
           <div className='flex flex-col lg:flex-row gap-7 lg:gap-10 p-5 lg:p-15'>
             <div className=' grid grid-cols-2 w-full gap-7 lg:gap-10 h-full'>
@@ -132,14 +132,14 @@ function Home() {
 
 
         <div className=" w-full text-center p-5 lg:p-15">
-          <p className=" text-2xl lg:text-4xl font-semibold">Latest Products</p>
+          <p className=" text-2xl lg:text-4xl 2xl:text-5xl font-semibold">Latest Products</p>
         </div>
         <div className='w-full h-full'><AllImage pageNo={1} limit={4} /></div>
 
 
         {/* About Company */}
         <div className='lg:p-20 lg:py-10 p-5'>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">
+          <h2 className="text-2xl lg:text-4xl 2xl:text-5xl font-bold mb-4 text-gray-800">
             About Savmisha Global Trends
           </h2>
           <p className="text-gray-600 leading-relaxed">
@@ -158,7 +158,7 @@ function Home() {
 
         {/* ABOUT SECTION */}
         <section className="lg:p-20 bg-white p-5">
-          <div className="max-w-7xl lg:px-6 mx-auto grid md:grid-cols-2 gap-12 items-center">
+          <div className="lg:px-6 mx-auto grid md:grid-cols-2 gap-12 items-center">
 
             <img
               src="manufacture2.png"
@@ -166,7 +166,7 @@ function Home() {
             />
 
             <div>
-              <h2 className="text-4xl font-bold mb-6">
+              <h2 className="text-4xl lg:text-4xl 2xl:text-5xl font-bold mb-6">
                 About Our Manufacturing
               </h2>
 
@@ -187,8 +187,8 @@ function Home() {
 
 
         {/* COMPANY STATS */}
-        <section className="lg:py-20 p-5 bg-gray-50">
-          <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <section className="lg:p-20 p-5 bg-gray-50">
+          <div className="mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
               { label: "Clients", value: "17+" },
               { label: "Products", value: "150+" },
@@ -213,9 +213,9 @@ function Home() {
 
         {/* FACTORY GALLERY */}
         <section className="p-5 lg:p-20 bg-gray-100">
-          <div className="max-w-7xl mx-auto lg:px-6">
+          <div className=" mx-auto lg:px-6">
 
-            <h2 className="text-3xl font-bold text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl 2xl:text-5xl font-bold text-center mb-12">
               Our Factory
             </h2>
 
@@ -243,7 +243,7 @@ function Home() {
 
         {/* SUSTAINABILITY */}
         <section className="p-5 lg:p-20 bg-green-50">
-          <div className="max-w-7xl mx-auto lg:px-6 grid md:grid-cols-2 gap-12 items-center">
+          <div className=" mx-auto lg:px-6 grid md:grid-cols-2 gap-12 items-center">
 
             <img
               src="manufacture.png"
@@ -251,7 +251,7 @@ function Home() {
             />
 
             <div>
-              <h2 className="text-3xl font-bold mb-6">
+              <h2 className="text-3xl lg:text-4xl 2xl:text-5xl font-bold mb-6">
                 Sustainable Manufacturing
               </h2>
 

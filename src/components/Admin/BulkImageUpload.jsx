@@ -70,8 +70,8 @@ const BulkImageUpload = () => {
     };
 
     return (
-        <div className="bg-gray-100 flex justify-center items-center px-5 md:p-4 lg:p-4">
-            <div className="bg-white w-full max-w-6xl rounded-2xl shadow-xl p-6">
+        <div className="bg-gray-100 flex justify-center items-center px-2 md:p-4 lg:p-4">
+            <div className="bg-white w-full rounded-2xl shadow-xl px-3 p-6">
 
                 <h2 className="text-2xl font-bold mb-6 text-center">
                     Bulk Image Upload
@@ -79,7 +79,7 @@ const BulkImageUpload = () => {
 
                 {/* UPLOAD BOX */}
 
-                <div className="border-2 border-dashed border-gray-400 rounded-xl p-6 flex flex-col gap-2 text-center items-center mb-4">
+                <div className="border-2 border-dashed border-gray-400 rounded-xl p-4 flex flex-col gap-2 text-center items-center mb-4">
 
                     <p className="font-semibold mb-2">
                         Upload Main Product Images
@@ -94,7 +94,7 @@ const BulkImageUpload = () => {
                             multiple
                             accept="image/*"
                             onChange={handleImages}
-                            className=" ml-25 cursor-pointer text-orange-700"
+                            className=" lg:ml-25 w-full cursor-pointer text-orange-700"
                         />
                     </div>
 

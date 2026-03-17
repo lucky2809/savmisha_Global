@@ -85,11 +85,11 @@ const ImageUpload = () => {
   };
 
   return (
-    <div className="bg-gray-100 flex justify-center items-center px-5 md:p-4 lg:p-4">
-      <div className="bg-white w-full max-w-5xl rounded-2xl shadow-xl p-6">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Product Image Upload
-        </h2>
+    <div className="bg-gray-100 flex justify-center items-center px-4 py-6">
+    <div className="bg-white w-full rounded-2xl shadow-xl p-2 lg:p-6">
+      <h2 className="text-xl lg:text-2xl font-bold mb-6 text-center">
+        Product Image Upload
+      </h2>
 
         {/* IMAGE UPLOAD */}
         <div className="border-2 border-dashed border-gray-400 rounded-xl p-6 flex flex-col gap-2 text-center items-center mb-4">
@@ -101,7 +101,7 @@ const ImageUpload = () => {
               multiple
               accept="image/*"
               onChange={handleImages}
-              className="ml-25 cursor-pointer text-orange-700"
+              className="lg:ml-25 w-full cursor-pointer text-orange-700"
             />
           </div>
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import MapView from './MapView'
+// import MapView from './MapView'
 import Footer from '../navComp/Footer'
 import Navbar from '../navComp/Navbar'
 import { FaWhatsapp, FaInstagram, FaEnvelope } from "react-icons/fa";
@@ -71,8 +71,8 @@ function Contact({ margin = "mt-20", active = "visible" }) {
             </section>
 
             <div className={`${active}`}>
-                <section className="bg-gray-50 lg:py-16 p-6 md:px-20">
-                    <div className="max-w-4xl mx-auto text-center">
+                <section className="bg-gray-50 lg:p-16 p-6 md:px-20">
+                    <div className=" text-center">
 
                         <h2 className="text-3xl font-bold text-gray-800 mb-6">
                             Contact Us
@@ -107,8 +107,8 @@ function Contact({ margin = "mt-20", active = "visible" }) {
                     </div>
                 </section>
 
-                <section className="bg-green-50 lg:py-16 p-6 md:px-20">
-                    <div className="max-w-4xl mx-auto text-center">
+                <section className="bg-green-50 lg:p-16 p-6 md:px-20">
+                    <div className=" text-center">
 
                         <h2 className="text-3xl font-bold text-gray-800 mb-6">
                             Contact Us on WhatsApp
@@ -145,8 +145,8 @@ function Contact({ margin = "mt-20", active = "visible" }) {
                     </div>
                 </section>
 
-                <section className="bg-pink-50 lg:py-16 p-6 md:px-20">
-                    <div className="max-w-4xl mx-auto text-center">
+                <section className="bg-pink-50 lg:p-16 p-6 md:px-20">
+                    <div className=" text-center">
 
                         <h2 className="text-3xl font-bold text-gray-800 mb-6">
                             Follow Us on Instagram
@@ -221,8 +221,9 @@ function Contact({ margin = "mt-20", active = "visible" }) {
                                 </div>
                             </div>
                         </div>
-                        <div className='w-full h-68 overflow-hidden'>
-                            <MapView />
+                        <div className='w-full h-full overflow-hidden'>
+                            {/* <MapView /> */}
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3499.7036059928982!2d77.06409327456!3d28.698511581083153!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d0531a669f7df%3A0x7b283e09018d1fa1!2sSAVMISHA%20GLOBAL%20TRENDS!5e0!3m2!1sen!2sin!4v1773647184109!5m2!1sen!2sin" width="100%" height="100%" style={{border:0}} allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                     </div>
 
@@ -279,7 +280,7 @@ function Contact({ margin = "mt-20", active = "visible" }) {
                         <div className='flex justify-center'>
                             <button
                                 type="submit"
-                                className='w-fit p-1 px-5 rounded-4xl text-xl font-semibold bg-[#f59e7b] hover:bg-white cursor-pointer hover:text-[#f59e7b] hover:border hover:border-[#f59e7b] text-white transition duration-400'
+                                className='w-fit p-3 px-5 rounded-4xl text-xl font-semibold bg-[#f59e7b] hover:bg-white cursor-pointer hover:text-[#f59e7b] hover:border hover:border-[#f59e7b] text-white transition duration-400'
                             >
                                 Send Message
                             </button>

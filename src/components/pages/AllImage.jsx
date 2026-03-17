@@ -200,7 +200,7 @@ function AllImage({ pageNo, limit = 4 }) {
                 setSelectedProduct(item);
                 setMainImage(item.images[0]);
               }}
-              className="relative group cursor-zoom-in rounded-xl w-full border border-gray-300 lg:h-[300px] overflow-hidden"
+              className="relative group cursor-zoom-in rounded-xl w-full border border-gray-300 overflow-hidden"
             >
 
               <LazyImage
@@ -321,14 +321,14 @@ function AllImage({ pageNo, limit = 4 }) {
                   onClick={() => handleUpdate()}
                   className="bg-blue-600 w-full text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-900 transition"
                 >
-                  Update
+                  Edit Product
                 </button>
 
                 <button
                   onClick={() => deleteImage(selectedProduct.id)}
                   className="bg-red-600 w-full text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-red-900 transition"
                 >
-                  Delete
+                  Delete Product
                 </button>
 
               </div>

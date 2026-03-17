@@ -69,8 +69,8 @@ function App() {
               <Route path="users" element={<AllUser />} />       {/* All Users */}
               <Route path="bulkImagepload" element={<BulkImageUpload />} />       {/* Bulk Image Upload */}
               <Route path="updateproductimages/:id" element={<ProtectedRoute><UpdateProductImages /></ProtectedRoute>} />       {/* Image Update */}
-
             </Route>
+            
           </Routes>
         </AuthProvider>
       </BrowserRouter>

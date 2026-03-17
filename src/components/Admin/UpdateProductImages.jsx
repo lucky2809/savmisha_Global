@@ -186,9 +186,9 @@ const UpdateProductImages = () => {
 
   return (
 
-    <div className="bg-gray-100 flex justify-center items-center px-5 md:p-4 lg:p-4">
+    <div className="bg-gray-100 flex justify-center items-center px-3 md:p-4 lg:p-4">
 
-      <div className="bg-white w-full max-w-5xl rounded-2xl shadow-xl p-6">
+      <div className="bg-white w-full max-w-5xl rounded-2xl shadow-xl px-3 p-6">
 
         <h2 className="text-2xl font-bold mb-6 text-center">
           Update Product Images
@@ -207,7 +207,7 @@ const UpdateProductImages = () => {
               multiple
               accept="image/*"
               onChange={handleImages}
-              className="ml-25 cursor-pointer text-orange-700"
+              className="lg:ml-25 w-full cursor-pointer text-orange-700"
             />
 
           </div>

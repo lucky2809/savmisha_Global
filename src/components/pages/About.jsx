@@ -34,8 +34,8 @@ const About = () => {
                 </section>
 
                 {/* ABOUT SECTION */}
-                <section className="lg:py-20 p-6">
-                    <div className="max-w-5xl mx-auto text-center">
+                <section className="lg:p-20 p-6">
+                    <div className="mx-auto text-center">
                         <h2 className="text-3xl md:text-4xl font-bold mb-6">Who We Are</h2>
                         <p className="text-lg text-gray-600">
                             <strong>SAVMISHA GLOBAL TRENDS</strong> is a leading clothing manufacturing
@@ -51,8 +51,8 @@ const About = () => {
                 </section>
 
                 {/* MISSION & VISION */}
-                <section className="lg:py-20 bg-gray-100 p-6">
-                    <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
+                <section className="lg:p-20 bg-gray-100 p-6">
+                    <div className=" grid md:grid-cols-2 gap-8">
                         <div className="bg-white p-8 rounded-xl shadow">
                             <h3 className="text-2xl font-semibold mb-4">Our Mission</h3>
                             <p className="text-gray-600">
@@ -75,8 +75,8 @@ const About = () => {
                 </section>
 
                 {/* WHY CHOOSE US */}
-                <section className="lg:py-20 p-6">
-                    <div className="max-w-5xl mx-auto text-center">
+                <section className="lg:p-20 p-6">
+                    <div className="text-center">
                         <h2 className="text-2xl lg:text-4xl font-bold mb-8">
                             Why Choose SAVMISHA GLOBAL TRENDS
                         </h2>
@@ -101,8 +101,8 @@ const About = () => {
                 </section>
 
                 {/* COMPANY STATS */}
-                <section className="lg:py-20 bg-gray-50 p-6">
-                    <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                <section className="lg:p-20 bg-gray-50 p-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                         {[
                             { label: "Clients", value: "17+" },
                             { label: "Products", value: "150+" },
@@ -126,8 +126,8 @@ const About = () => {
                 </section>
 
                 {/* MANUFACTURING PROCESS */}
-                <section className="lg:py-20 p-6">
-                    <div className="max-w-6xl mx-auto text-center">
+                <section className="lg:p-20 p-6">
+                    <div className=" text-center">
                         <h2 className="text-3xl md:text-4xl font-bold mb-10">
                             Our Manufacturing Process
                         </h2>
@@ -151,7 +151,7 @@ const About = () => {
                 </section>
 
                 {/* Section 1 */}
-                <section className="max-w-7xl mx-auto lg:py-20 p-6 grid md:grid-cols-2 gap-12 items-center">
+                <section className=" lg:p-20 p-6 grid md:grid-cols-2 gap-12 items-center">
 
                     <img
                         src="about3.png"
@@ -178,7 +178,7 @@ const About = () => {
 
                 {/* Section 2 */}
                 <section className="bg-white">
-                    <div className="max-w-7xl mx-auto lg:py-20 p-6 grid md:grid-cols-2 gap-12 items-center">
+                    <div className=" lg:p-20 p-6 grid md:grid-cols-2 gap-12 items-center">
 
                         <div>
                             <h2 className="text-4xl font-bold mb-6">
@@ -204,7 +204,7 @@ const About = () => {
                 </section>
 
 
-                <div className="w-full flex text-center justify-center lg:py-15 bg-gray-200">
+                <div className="w-full flex text-center justify-center lg:p-20 bg-gray-200">
                     <div className="p-6">
                         <p className="text-3xl lg:text-6xl font-bold text-yellow-600 mb-2">
                             Factory Types
@@ -215,10 +215,10 @@ const About = () => {
 
 
                 {/* Section 3 */}
-                <section className="max-w-7xl mx-auto lg:py-20 p-6 grid md:grid-cols-2 gap-12 items-center">
+                <section className="lg:p-20 p-6 grid md:grid-cols-2 gap-12 items-center">
 
                     <img
-                        src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09"
+                        src="location.png"
                         className="rounded-xl shadow-lg"
                         alt="Delhi city"
                     />
@@ -243,7 +243,7 @@ const About = () => {
 
                 {/* Section 4 */}
                 <section className="bg-gray-900 text-white">
-                    <div className="max-w-7xl mx-auto lg:py-20 p-6 grid md:grid-cols-2 gap-12 items-center">
+                    <div className="lg:p-20 p-6 grid md:grid-cols-2 gap-12 items-center">
 
                         <div>
                             <h2 className="text-4xl font-bold mb-6">
@@ -261,7 +261,7 @@ const About = () => {
                         </div>
 
                         <img
-                            src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f"
+                            src=""
                             className="rounded-xl shadow-lg"
                             alt="Clothing products"
                         />
@@ -269,8 +269,8 @@ const About = () => {
                 </section>
 
                 {/* LEADERSHIP */}
-                <section className="lg:py-20 bg-gray-100 p-6">
-                    <div className="max-w-6xl mx-auto text-center">
+                <section className="lg:p-20 bg-gray-100 p-6">
+                    <div className="text-center">
                         <h2 className="text-3xl md:text-4xl font-bold mb-10">
                             Our Leadership
                         </h2>
@@ -302,32 +302,6 @@ const About = () => {
                 <div>
                     <Footer />
                 </div>
-                {/* CONTACT */}
-                {/* <section
-                    id="contact"
-                    className="py-20 bg-gray-200 text-center px-6"
-                >
-                    <div className="max-w-4xl mx-auto">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                            Let’s Work Together
-                        </h2>
-                        <p className="text-gray-600 mb-6">
-                            Looking for a reliable clothing manufacturing and export partner?
-                            We are ready to bring your designs to life.
-                        </p>
-                        <a
-                            href="mailto:info@savmishaglobaltrends.com"
-                            className="inline-block bg-[#f59e7b] text-white hover:bg-white hover:text-[#f59e7b] border border-[#f59e7b] px-8 py-3 rounded-full font-semibold transition"
-                        >
-                            Email Us
-                        </a>
-                    </div>
-                </section> */}
-
-                {/* FOOTER */}
-                {/* <footer className="bg-black text-white text-center py-4 text-sm">
-                    ©️ 2026 SAVMISHA GLOBAL TRENDS. All Rights Reserved.
-                </footer> */}
 
             </div>
         </div>
