@@ -209,7 +209,7 @@ const About = () => {
                         <p className="text-3xl lg:text-6xl font-bold text-yellow-600 mb-2">
                             Factory Types
                         </p>
-                        <p className="text-gray-600 text-lg lg:text-xl">Textile, Garments, Bedsheets, Bags</p>
+                        <p className="text-gray-600 text-lg lg:text-xl">Textile, Garments, Bags</p>
                     </div>
                 </div>
 
@@ -218,7 +218,7 @@ const About = () => {
                 <section className="lg:p-20 p-6 grid md:grid-cols-2 gap-12 items-center">
 
                     <img
-                        src="location.png"
+                        src="barcode.png"
                         className="rounded-xl shadow-lg"
                         alt="Delhi city"
                     />
@@ -261,7 +261,7 @@ const About = () => {
                         </div>
 
                         <img
-                            src=""
+                            src="comitment.jpeg"
                             className="rounded-xl shadow-lg"
                             alt="Clothing products"
                         />

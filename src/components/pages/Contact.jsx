@@ -184,7 +184,7 @@ function Contact({ margin = "mt-20", active = "visible" }) {
                 </section>
             </div>
 
-            <div className={`w-full bg-white p-10 px-32 max-lg:px-15 max-sm:p-5`}>
+            <div className={`w-full bg-white p-5 md:px-5 lg:px-15`}>
                 <div className='w-full flex justify-center p-5'>
                     <h1 className='font-bold text-4xl'>Contact Us</h1>
                 </div>
@@ -215,7 +215,7 @@ function Contact({ margin = "mt-20", active = "visible" }) {
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <h1 className='text-2xl max-lg:text-2xl font-semibold'>Call:</h1>
-                                <div className='flex max-lg:flex-col text-sm'>
+                                <div className='flex lg:flex-col text-sm'>
                                     <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER1}`}> <p className='text-[#f59e7b]'>+91 9560941936,</p></a>
                                     <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER2}`}><p className='text-[#f59e7b]'>+91 9911664845</p></a>
                                 </div>

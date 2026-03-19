@@ -49,7 +49,7 @@ const EmailOtpVerification = ({ onVerified, prefilledEmail }) => {
 
   return (
     <div className='main-charecter flex flex-col justify-center items-center h-screen w-full p-5 gap-10 bg-gray-100'>
-      <div className='w-30 lg:w-60 p-2'>
+      <div className='w-30 md:w-50 lg:w-60 p-2'>
         <img className='h-full w-full' src="logo02.png" alt="" srcset="" />
       </div>
       <div className="p-5 max-w-md mx-auto rounded-xl bg-white">

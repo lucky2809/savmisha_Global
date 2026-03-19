@@ -18,20 +18,20 @@ function Home() {
 
 
         <section className="w-full">
-          <div className="w-full p-5 lg:p-10 lg:px-20 flex flex-col lg:flex-row justify-between gap-10">
+          <div className="w-full p-5 lg:p-10 lg:px-20 flex flex-col md:flex-row lg:flex-row justify-between gap-10 md:gap-0">
 
             {/* Hero Text */}
-            <div className='lg:w-[50%]'>
+            <div className='lg:w-[50%] md:w-[60%]'>
               <h1 className="text-4xl lg:text-5xl 2xl:text-7xl  font-bold text-gray-900 leading-tight">
                 Premium Clothing <span className="text-[#f59e7b]">Manufacturing </span>
                 for Modern Fashion Brands
               </h1>
 
-              <p className="mt-6 text-gray-600 text-lg">
+              <p className="mt-6 md:mt-3 text-gray-600 text-lg">
                 Have a clothing idea or fashion brand in mind? Our manufacturing experts are ready to transform your designs into high-quality garments that customers love.
               </p>
 
-              <div className="mt-8 flex gap-4">
+              <div className="mt-8 md:mt-4 flex gap-4">
                 <button onClick={() => navigate('/contact')} className="bg-[#f59e7b] text-white p-3 lg:px-6 lg:py-3 rounded-lg border hover:border-[#f59e7b] hover:bg-white hover:text-[#f59e7b] transition cursor-pointer">
                   Get a Quote
                 </button>
@@ -43,7 +43,7 @@ function Home() {
             </div>
 
             {/* Hero Image */}
-            <div className='lg:w-[30%] '>
+            <div className='lg:w-[30%] md:w-[40%] '>
               <img
                 src="hero.png"
                 alt="Clothing Manufacturing"
@@ -55,13 +55,13 @@ function Home() {
         </section>
 
         <div className='flex flex-col gap-4 lg:gap-8 lg:px-20 px-5'>
-          <p className='md:text-7xl lg:text-8xl text-2xl font-bold'><span className='text-4xl lg:text-9xl'>India’s </span> Trusted Clothing Manufacturing Partner</p>
+          <p className='md:text-6xl lg:text-8xl text-2xl font-bold'><span className='text-4xl md:text-8xl lg:text-9xl'>India’s </span> Trusted Clothing Manufacturing Partner</p>
           <p className='text-sm lg:text-xl text-gray-400 font-semibold lg:w-[90%]'>Located in Delhi, the hub of India’s garment industry, we produce high-quality apparel with advanced technology and expert craftsmanship, serving brands and businesses across the country.</p>
         </div>
 
         <div className='h-full w-full lg:p-7'>
           <div className=" w-full text-center p-4 lg:p-7">
-            <p className="text-2xl lg:text-4xl 2xl:text-5xl font-bold">Our Products</p>
+            <p className="text-2xl md:text-4xl lg:text-4xl 2xl:text-5xl font-bold">Our Products</p>
           </div>
           <div className='flex flex-col lg:flex-row gap-7 lg:gap-10 p-5 lg:p-15'>
             <div className=' grid grid-cols-2 w-full gap-7 lg:gap-10 h-full'>
@@ -132,7 +132,7 @@ function Home() {
 
 
         <div className=" w-full text-center p-5 lg:p-15">
-          <p className=" text-2xl lg:text-4xl 2xl:text-5xl font-semibold">Latest Products</p>
+          <p className=" text-2xl md:text-4xl lg:text-4xl 2xl:text-5xl font-semibold">Latest Products</p>
         </div>
         <div className='w-full h-full'><AllImage pageNo={1} limit={4} /></div>
 

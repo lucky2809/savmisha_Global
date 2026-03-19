@@ -71,7 +71,7 @@ function Navbar() {
         <div className='w-full flex lg:flex-col flex-row items-center  justify-between gap-1'>
           {/* Logo */}
           <div className='lg:w-55 w-30'>
-            <img className='w-full h-full object-contain' src="logo02.png" alt="logo" />
+            <a href="/"><img className='w-full h-full object-contain' src="logo02.png" alt="logo" /></a>
           </div>
 
           {/* Desktop Menu */}

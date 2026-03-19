@@ -83,7 +83,7 @@ function Signup() {
             {/* <Navbar /> */}
             {/* <div className='w-full'> */}
             <div className='flex w-full font-sans font-semibold'>
-                <div className='w-full flex flex-col justify-center lg:gap-12 items-center max-lg:px-20 max-sm:px-5'>
+                <div className='w-full flex flex-col justify-center lg:gap-12 items-center max-lg:px-20 max-sm:px-5 md:flex md:justify-center h-screen md:items-center'>
                     {/* <div className='flex w-full max-sm:justify-center px-15 max-lg:px-2 p-2'>
                             <p className='text-md lg:text-lg font-semibold'>
                                 If you have an account 

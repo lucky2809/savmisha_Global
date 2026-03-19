@@ -131,7 +131,7 @@ function Login() {
 
   return (
     <div
-      className="w-full min-h-screen flex items-center justify-center bg-cover"
+      className="w-full min-h-screen flex items-center justify-center bg-cover md:px-32"
       style={{
         backgroundImage:
           window.innerWidth >= 768 ? `url(${bgimgurl}login.png)` : "none",
@@ -140,11 +140,10 @@ function Login() {
 
       <ToastContainer position="top-right" autoClose={2500} />
 
-      <div className='w-full mx-4 lg:mx-0 max-w-4xl bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2'>
+      <div className='w-full mx-4 lg:mx-0 bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2 md:p-5'>
 
         {/* LEFT */}
         <div className='flex flex-col justify-center items-center p-4 lg:p-8'>
-
           <div className='flex flex-col items-center'>
             <img className='w-20' src="logo02.png" alt="logo" />
             <p className='font-bold text-lg'>SAVMISHA GLOBAL</p>
