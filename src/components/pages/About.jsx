@@ -25,7 +25,7 @@ const About = () => {
                             Premium Boho Style Garment Manufacturing & Exporting Since 2000
                         </p>
                         <a
-                            href="#contact"
+                            href={`mailto:${import.meta.env.VITE_APP_CONTACT_EMAIL}`}
                             className="inline-block  bg-[#f59e7b] hover:bg-white cursor-pointer hover:text-[#f59e7b] border border-[#f59e7b] text-white px-8 py-3 rounded-full font-semibold transition"
                         >
                             Contact Us

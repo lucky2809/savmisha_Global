@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react"; // ✅ useRef added
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -11,38 +11,45 @@ const UpdateProductImages = () => {
   const [mainIndex, setMainIndex] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  const fileInputRef = useRef(null); // ✅ NEW
+
   const API = import.meta.env.VITE_API_URL;
   const HOST = import.meta.env.VITE_API_URL;
 
 
   // ================= FETCH PRODUCT =================
+
+  const fetchProduct = async () => { // ✅ NEW FUNCTION
+    try {
+      const res = await axios.get(`${API}/images/${id}`);
+      const data = res.data.data;
+
+      const formatted = [
+        {
+          url: HOST + data.mainImage,
+          path: data.mainImage,
+          file: null,
+          isNew: false
+        },
+        ...data.otherImages.map((img) => ({
+          url: HOST + img,
+          path: img,
+          file: null,
+          isNew: false
+        }))
+      ];
+
+      setImages(formatted);
+      setMainIndex(0);
+
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to load product images");
+    }
+  };
+
   useEffect(() => {
-    const getProduct = async () => {
-      try {
-        const res = await axios.get(`${API}/images/${id}`);
-        const data = res.data.data;
-        const formatted = [
-          {
-            url: HOST + data.mainImage,
-            path: data.mainImage,
-            file: null,
-            isNew: false
-          },
-          ...data.otherImages.map((img) => ({
-            url: HOST + img,
-            path: img,
-            file: null,
-            isNew: false
-          }))
-        ];
-        setImages(formatted);
-        setMainIndex(0);
-      } catch (err) {
-        console.log(err);
-        toast.error("Failed to load product images");
-      }
-    };
-    getProduct();
+    fetchProduct(); // ✅ USE HERE
   }, [id]);
 
 
@@ -65,6 +72,7 @@ const UpdateProductImages = () => {
       toast.error("Maximum 5 images allowed");
       return;
     }
+
     setImages(combined);
   };
 
@@ -78,11 +86,9 @@ const UpdateProductImages = () => {
     try {
 
       if (!img.isNew) {
-
         await axios.put(`${API}/images/update-action/${id}`, {
           deleteImage: img.path
         });
-
       }
 
       const updated = images.filter((_, i) => i !== index);
@@ -93,10 +99,8 @@ const UpdateProductImages = () => {
       else if (mainIndex > index) setMainIndex((prev) => prev - 1);
 
     } catch (err) {
-
       console.log(err);
       toast.error("Delete failed");
-
     }
 
   };
@@ -111,20 +115,16 @@ const UpdateProductImages = () => {
     try {
 
       if (!img.isNew) {
-
         await axios.put(`${API}/images/update-action/${id}`, {
           setMain: img.path
         });
-
       }
 
       setMainIndex(index);
 
     } catch (err) {
-
       console.log(err);
       toast.error("Main image update failed");
-
     }
 
   };
@@ -138,18 +138,16 @@ const UpdateProductImages = () => {
 
     const mainImage = images[mainIndex];
 
-    if (mainImage.isNew) {
+    if (mainImage?.isNew) {
       formData.append("mainImage", mainImage.file);
     }
 
     images.forEach((img, i) => {
-
       if (i === mainIndex) return;
 
       if (img.isNew) {
         formData.append("otherImages", img.file);
       }
-
     });
 
     try {
@@ -168,15 +166,24 @@ const UpdateProductImages = () => {
 
       toast.success("Product updated successfully");
 
-    } catch (err) {
+      // ✅ 🔥 CORE FIX START
 
+      setImages([]);            // clear old state
+      setMainIndex(0);          // reset index
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""; // reset input
+      }
+
+      await fetchProduct();     // reload fresh data from backend
+
+      // ✅ 🔥 CORE FIX END
+
+    } catch (err) {
       console.log(err);
       toast.error("Update failed");
-
     } finally {
-
       setLoading(false);
-
     }
 
   };
@@ -194,8 +201,6 @@ const UpdateProductImages = () => {
           Update Product Images
         </h2>
 
-        {/* IMAGE UPLOAD */}
-
         <div className="border-2 border-dashed border-gray-400 rounded-xl p-6 flex flex-col gap-2 text-center items-center mb-4">
 
           <p className="font-semibold">Add More Images</p>
@@ -203,6 +208,7 @@ const UpdateProductImages = () => {
           <div className="border w-fit p-2 border-orange-700">
 
             <input
+              ref={fileInputRef} // ✅ IMPORTANT
               type="file"
               multiple
               accept="image/*"
@@ -218,13 +224,9 @@ const UpdateProductImages = () => {
 
         </div>
 
-
         <p className="text-sm text-gray-600 mb-4">
           👉 Click any image to set as <b>Main Image</b>
         </p>
-
-
-        {/* PREVIEW GRID */}
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-6">
 
@@ -262,7 +264,6 @@ const UpdateProductImages = () => {
           ))}
 
         </div>
-
 
         <button
           onClick={handleUpdate}

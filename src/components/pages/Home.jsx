@@ -177,7 +177,7 @@ function Home() {
                 international quality standards.
               </p>
 
-              <button className="px-6 py-3 bg-black text-white rounded-lg">
+              <button onClick={() => navigate('/about')} className="px-6 py-3 cursor-pointer bg-black text-white rounded-lg">
                 Learn More
               </button>
             </div>

@@ -120,7 +120,7 @@ function AllImage({ pageNo, limit = 4 }) {
       setSelectedProduct(null);
       setMainImage("");
       toast.success("Deleted successfully");
-      navigate("/");
+      navigate("/products");
 
     } catch (err) {
       console.error("Delete error:", err);
@@ -259,7 +259,7 @@ function AllImage({ pageNo, limit = 4 }) {
           <div
             ref={modalRef}
             onMouseDown={(e) => e.stopPropagation()}
-            className="bg-gray-200 rounded-xl p-2 lg:p-5 max-w-4xl w-full flex flex-col md:flex-row gap-2 lg:gap-5 relative"
+            className="bg-gray-200 rounded-xl p-2 lg:p-5 max-w-4xl w-full flex flex-col md:flex-row lg:flex-row gap-2 lg:gap-5 relative"
           >
 
             <button
@@ -315,18 +315,18 @@ function AllImage({ pageNo, limit = 4 }) {
 
             {isAdmin && (
 
-              <div className="flex lg:flex-col lg:justify-end gap-4 w-full lg:w-fit">
+              <div className="flex md:flex-col lg:flex-col md:justify-end lg:justify-end gap-4 w-full md:w-fit lg:w-fit">
 
                 <button
                   onClick={() => handleUpdate()}
-                  className="bg-blue-600 w-full text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-900 transition"
+                  className="bg-blue-600 w-full text-sm lg:text-md text-white p-1 md:p-2 lg:px-4 lg:py-2 rounded-lg cursor-pointer hover:bg-blue-900 transition"
                 >
                   Edit Product
                 </button>
 
                 <button
                   onClick={() => deleteImage(selectedProduct.id)}
-                  className="bg-red-600 w-full text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-red-900 transition"
+                  className="bg-red-600 w-full text-sm lg:text-md text-white p-1 md:p-2 lg:px-4 lg:py-2 rounded-lg cursor-pointer hover:bg-red-900 transition"
                 >
                   Delete Product
                 </button>
