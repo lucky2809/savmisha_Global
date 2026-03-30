@@ -4,19 +4,20 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const ImageUpload = () => {
-  const [images, setImages] = useState([]); // all images
-  const [mainIndex, setMainIndex] = useState(0); // main image index
+  const [images, setImages] = useState([]);
+  const [mainIndex, setMainIndex] = useState(0);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate()
 
-  // Backend API
+  // ✅ NEW STATE
+  const [description, setDescription] = useState("");
+
+  const navigate = useNavigate();
+
   const API_URL = `${import.meta.env.VITE_API_URL}/images/upload`;
 
-  // handle file select
   const handleImages = (e) => {
     const files = Array.from(e.target.files);
 
-    // combine old + new images
     const combined = [...images, ...files];
 
     if (combined.length > 5) {
@@ -26,18 +27,15 @@ const ImageUpload = () => {
 
     setImages(combined);
 
-    // if first image, auto set main
     if (combined.length === files.length) {
       setMainIndex(0);
     }
   };
 
-  // remove image
   const removeImage = (index) => {
     const newImages = images.filter((_, i) => i !== index);
     setImages(newImages);
 
-    // fix main index
     if (mainIndex === index) {
       setMainIndex(0);
     } else if (mainIndex > index) {
@@ -45,12 +43,7 @@ const ImageUpload = () => {
     }
   };
 
-  // upload
   const handleSubmit = async () => {
-    // if (images.length < 4) {
-    //   alert("Minimum 4 images required");
-    //   return;
-    // }
 
     const formData = new FormData();
 
@@ -64,6 +57,9 @@ const ImageUpload = () => {
       }
     });
 
+    // ✅ ADD DESCRIPTION
+    formData.append("description", description);
+
     try {
       setLoading(true);
 
@@ -76,6 +72,10 @@ const ImageUpload = () => {
       // reset
       setImages([]);
       setMainIndex(0);
+      setDescription(""); // ✅ reset
+
+      navigate("/products");
+
     } catch (err) {
       console.error(err);
       toast.error("Upload Failed");
@@ -83,18 +83,21 @@ const ImageUpload = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="bg-gray-100 flex justify-center items-center px-4 py-6">
-    <div className="bg-white w-full rounded-2xl shadow-xl p-2 lg:p-6">
-      <h2 className="text-xl lg:text-2xl font-bold mb-6 text-center">
-        Product Image Upload
-      </h2>
+      <div className="bg-white w-full rounded-2xl shadow-xl p-2 lg:p-6">
+
+        <h2 className="text-xl lg:text-2xl font-bold mb-6 text-center">
+          Product Image Upload
+        </h2>
 
         {/* IMAGE UPLOAD */}
         <div className="border-2 border-dashed border-gray-400 rounded-xl p-6 flex flex-col gap-2 text-center items-center mb-4">
           <p className="font-semibold">Upload Product Images</p>
           <p className="text-sm text-gray-500">Minimum 4 images required</p>
+
           <div className="border w-fit p-2 border-orange-700">
             <input
               type="file"
@@ -122,21 +125,20 @@ const ImageUpload = () => {
               <img
                 src={URL.createObjectURL(img)}
                 alt=""
-                className={`h-32 w-full object-cover rounded-lg border-2 ${mainIndex === index
+                className={`h-32 w-full object-cover rounded-lg border-2 ${
+                  mainIndex === index
                     ? "border-green-500"
                     : "border-gray-300"
-                  }`}
+                }`}
                 onClick={() => setMainIndex(index)}
               />
 
-              {/* MAIN badge */}
               {mainIndex === index && (
                 <span className="absolute top-1 left-1 bg-green-500 text-white text-xs px-2 py-1 rounded">
                   MAIN
                 </span>
               )}
 
-              {/* Remove button */}
               <button
                 type="button"
                 onClick={() => removeImage(index)}
@@ -148,6 +150,26 @@ const ImageUpload = () => {
           ))}
         </div>
 
+        {/* ✅ DESCRIPTION FIELD */}
+        <div className="mb-6">
+          <label className="block text-sm font-semibold mb-2">
+            Product Description
+          </label>
+
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={4}
+            placeholder="Write product description..."
+            className="w-full border border-gray-300 rounded-xl p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-black"
+          />
+
+          <p className="text-xs text-gray-400 mt-1">
+            Keep it short & attractive ✨
+          </p>
+        </div>
+
+        {/* SUBMIT */}
         <button
           onClick={handleSubmit}
           disabled={loading}
@@ -155,6 +177,7 @@ const ImageUpload = () => {
         >
           {loading ? "Uploading..." : "Upload Product"}
         </button>
+
       </div>
     </div>
   );

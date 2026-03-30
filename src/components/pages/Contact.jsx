@@ -215,7 +215,7 @@ function Contact({ margin = "mt-20", active = "visible" }) {
                             </div>
                             <div className='flex flex-col gap-1'>
                                 <h1 className='text-2xl max-lg:text-2xl font-semibold'>Call:</h1>
-                                <div className='flex lg:flex-col text-sm'>
+                                <div className='flex text-sm'>
                                     <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER1}`}> <p className='text-[#f59e7b]'>+91 9560941936,</p></a>
                                     <a href={`tel:${import.meta.env.VITE_PHONE_NUMBER2}`}><p className='text-[#f59e7b]'>+91 9911664845</p></a>
                                 </div>

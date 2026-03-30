@@ -6,13 +6,17 @@ import LazyImage from "../UI/LazyImage";
 import { toast } from "react-toastify";
 
 function AllImage({ pageNo, limit = 4 }) {
-  const [page, setPage] = useState(1)
+
+  const [page, setPage] = useState(1);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [mainImage, setMainImage] = useState("");
 
-  const navigate = useNavigate()
+  // ✅ NEW STATES
+  const [expandedItems, setExpandedItems] = useState({});
+  const [expandedModal, setExpandedModal] = useState(false);
 
+  const navigate = useNavigate();
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const modalRef = useRef(null);
@@ -21,7 +25,6 @@ function AllImage({ pageNo, limit = 4 }) {
   const isAdmin = user?.role === "admin";
 
   const HOST = `${import.meta.env.VITE_API_URL}`;
-
   const GET_API = `${import.meta.env.VITE_API_URL}/images/all?page=${pageNo ? pageNo : page}&limit=${limit}`;
 
   const observer = useRef(null);
@@ -36,9 +39,9 @@ function AllImage({ pageNo, limit = 4 }) {
     observer.current = new IntersectionObserver(
       (entries) => {
         const first = entries[0];
-        if (first.isIntersecting && !isFetching.current && pageNo == null  ) {
+        if (first.isIntersecting && !isFetching.current && pageNo == null) {
           isFetching.current = true;
-          setPage((prev) =>  prev + 1);
+          setPage((prev) => prev + 1);
         }
       },
       {
@@ -52,10 +55,8 @@ function AllImage({ pageNo, limit = 4 }) {
 
   }, [loading, hasMore]);
 
-
   const fetchImages = async () => {
     try {
-
       if (!hasMore) return;
 
       setLoading(true);
@@ -75,6 +76,7 @@ function AllImage({ pageNo, limit = 4 }) {
         return {
           id: item._id,
           title: "Product",
+          description: item.description || "", // ✅ ADDED
           images: [
             HOST + item.mainImage,
             ...others,
@@ -87,15 +89,9 @@ function AllImage({ pageNo, limit = 4 }) {
       });
 
       setProducts((prev) => {
-
         const existingIds = new Set(prev.map(p => p.id));
-
-        const newItems = formattedData.filter(
-          item => !existingIds.has(item.id)
-        );
-
+        const newItems = formattedData.filter(item => !existingIds.has(item.id));
         return [...prev, ...newItems];
-
       });
 
       setHasMore(res.data.hasMore);
@@ -112,7 +108,6 @@ function AllImage({ pageNo, limit = 4 }) {
     fetchImages();
   }, [page]);
 
-
   const deleteImage = async (id) => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/images/delete/${id}`);
@@ -121,20 +116,15 @@ function AllImage({ pageNo, limit = 4 }) {
       setMainImage("");
       toast.success("Deleted successfully");
       navigate("/products");
-
     } catch (err) {
-      console.error("Delete error:", err);
       toast.error("Delete failed");
     }
   };
 
-
-  // ✅ UPDATE NAVIGATION
   const handleUpdate = () => {
     if (!selectedProduct?.id) return;
     navigate(`/dashboard/updateproductimages/${selectedProduct.id}`);
   };
-
 
   const thumbnailToImage = (thumbPath) => {
     if (!thumbPath) return null;
@@ -142,9 +132,8 @@ function AllImage({ pageNo, limit = 4 }) {
   };
 
   const handleSetThumbnail = (thumb = "") => {
-    setMainImage(thumbnailToImage(thumb))
-  }
-
+    setMainImage(thumbnailToImage(thumb));
+  };
 
   const handleOutsideClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -152,9 +141,7 @@ function AllImage({ pageNo, limit = 4 }) {
     }
   };
 
-
   useEffect(() => {
-
     if (selectedProduct) {
       document.body.style.overflow = "hidden";
     } else {
@@ -162,9 +149,7 @@ function AllImage({ pageNo, limit = 4 }) {
     }
 
     const handleEsc = (e) => {
-      if (e.key === "Escape") {
-        setSelectedProduct(null);
-      }
+      if (e.key === "Escape") setSelectedProduct(null);
     };
 
     window.addEventListener("keydown", handleEsc);
@@ -173,18 +158,16 @@ function AllImage({ pageNo, limit = 4 }) {
       document.body.style.overflow = "auto";
       window.removeEventListener("keydown", handleEsc);
     };
-
   }, [selectedProduct]);
-
 
   return (
 
     <div className="w-full px-3 md:px-10 lg:px-14">
-      {/* Product Grid */}
 
+      {/* GRID */}
       <div
         ref={containerRef}
-        className={`grid lg:grid-cols-4 gap-5 p-2 lg:p-5 max-sm:gap-2 grid-cols-2 h-full ${pageNo ? " " :"overflow-auto"}`}
+        className={`grid lg:grid-cols-4 gap-5 p-2 lg:p-5 max-sm:gap-2 grid-cols-2 h-full ${pageNo ? "" : "overflow-auto"}`}
       >
 
         {products.map((item, index) => {
@@ -199,48 +182,60 @@ function AllImage({ pageNo, limit = 4 }) {
               onClick={() => {
                 setSelectedProduct(item);
                 setMainImage(item.images[0]);
+                setExpandedModal(false);
               }}
-              className="relative group cursor-zoom-in rounded-xl w-full border border-gray-300 overflow-hidden"
+              className="rounded-xl w-full border border-gray-300 overflow-hidden bg-white cursor-zoom-in"
             >
 
-              <LazyImage
-                src={item.images[0]}
-                alt={item.title}
-                className="transition-transform duration-500 group-hover:scale-110"
-              />
+              {/* IMAGE WRAPPER */}
+              <div className="relative group">
 
-              <div
-                className="absolute inset-0 z-40 bg-black rounded-xl
-                flex items-center justify-center
-                opacity-0 group-hover:opacity-70
-                transition-opacity duration-500"
-              >
-                <p className="text-white text-2xl font-serif italic font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  view more
+                <LazyImage
+                  src={item.images[0]}
+                  alt={item.title}
+                  className="transition-transform duration-500 group-hover:scale-110"
+                />
+
+                {/* ✅ OVERLAY ONLY ON IMAGE */}
+                <div className="absolute inset-0 z-40 bg-black rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-70 transition-opacity duration-500">
+                  <p className="text-white text-2xl font-serif italic font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    view more
+                  </p>
+                </div>
+
+              </div>
+
+              {/* ✅ DESCRIPTION (NOW VISIBLE) */}
+              <div className="p-2">
+                <p className="text-gray-700 text-xs md:text-sm">
+                  {expandedItems[item.id]
+                    ? item.description
+                    : item.description?.slice(0, 60)}
                 </p>
+
+                {item.description?.length > 60 && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setExpandedItems(prev => ({
+                        ...prev,
+                        [item.id]: !prev[item.id]
+                      }));
+                    }}
+                    className="text-blue-600 text-xs mt-1 hover:underline"
+                  >
+                    {expandedItems[item.id] ? "Less" : "More"}
+                  </button>
+                )}
               </div>
 
             </div>
           );
         })}
 
-        {loading && (
-          <div className="col-span-full text-center py-4 text-gray-500">
-            Loading more products...
-          </div>
-        )}
-
-        {!hasMore && (
-          <div className="col-span-full text-center py-4 text-gray-400">
-            No more products....
-          </div>
-        )}
-
       </div>
 
-
-      {/* Modal */}
-
+      {/* MODAL */}
       {selectedProduct && (
 
         <div
@@ -255,11 +250,10 @@ function AllImage({ pageNo, limit = 4 }) {
             ✕
           </button>
 
-
           <div
             ref={modalRef}
             onMouseDown={(e) => e.stopPropagation()}
-            className="bg-gray-200 rounded-xl p-2 lg:p-5 max-w-4xl w-full flex flex-col md:flex-row lg:flex-row gap-2 lg:gap-5 relative"
+            className="bg-gray-200 rounded-xl p-2 lg:p-5 max-w-4xl w-full flex flex-col md:flex-row gap-3"
           >
 
             <button
@@ -269,80 +263,68 @@ function AllImage({ pageNo, limit = 4 }) {
               ✕
             </button>
 
-
-            {/* Main Image */}
-
-            <div className="flex-1 max-h-[70vh] w-full flex items-center justify-center overflow-hidden">
+            {/* IMAGE */}
+            <div className="flex-1 flex flex-col items-center">
 
               <img
                 src={mainImage}
-                className="w-full h-full object-contain rounded-xl transition-all duration-500 overflow-hidden shadow-2xl"
+                className="w-full max-h-[60vh] object-contain rounded-xl shadow-xl"
               />
 
-            </div>
+              {/* ✅ MODAL DESCRIPTION */}
+              <div className="mt-3 w-full bg-white rounded-lg p-3">
 
+                <p className="text-gray-700 text-sm md:text-base text-center">
+                  {expandedModal
+                    ? selectedProduct.description
+                    : selectedProduct.description?.slice(0, 120)}
+                </p>
 
-            {/* Thumbnails */}
-
-            <div className="grid grid-cols-2 md:flex md:flex-col gap-3 md:w-28">
-
-              {selectedProduct.thumbnails.map((img, i) => (
-
-                <div
-                  key={i}
-                  onClick={() => handleSetThumbnail(img)}
-                  className={`border rounded-lg p-1 cursor-pointer transition-all duration-300 w-25 h-25
-              ${mainImage === thumbnailToImage(img)
-                      ? "border-blue-500 scale-105"
-                      : "border-gray-300 hover:border-blue-400"
-                    }
-            `}
-                >
-
-                  <img
-                    src={img}
-                    className="w-full h-full object-cover rounded-md hover:scale-105 transition"
-                  />
-
-                </div>
-
-              ))}
-
-            </div>
-
-
-            {/* ADMIN BUTTONS */}
-
-            {isAdmin && (
-
-              <div className="flex md:flex-col lg:flex-col md:justify-end lg:justify-end gap-4 w-full md:w-fit lg:w-fit">
-
-                <button
-                  onClick={() => handleUpdate()}
-                  className="bg-blue-600 w-full text-sm lg:text-md text-white p-1 md:p-2 lg:px-4 lg:py-2 rounded-lg cursor-pointer hover:bg-blue-900 transition"
-                >
-                  Edit Product
-                </button>
-
-                <button
-                  onClick={() => deleteImage(selectedProduct.id)}
-                  className="bg-red-600 w-full text-sm lg:text-md text-white p-1 md:p-2 lg:px-4 lg:py-2 rounded-lg cursor-pointer hover:bg-red-900 transition"
-                >
-                  Delete Product
-                </button>
+                {selectedProduct.description?.length > 120 && (
+                  <button
+                    onClick={() => setExpandedModal(!expandedModal)}
+                    className="text-blue-600 text-sm mt-1 block mx-auto hover:underline"
+                  >
+                    {expandedModal ? "Less" : "More"}
+                  </button>
+                )}
 
               </div>
 
-            )}
+            </div>
 
+            {/* THUMBNAILS */}
+            <div className="grid grid-cols-2 md:flex md:flex-col gap-3 md:w-28">
+              {selectedProduct.thumbnails.map((img, i) => (
+                <div
+                  key={i}
+                  onClick={() => handleSetThumbnail(img)}
+                  className="border rounded-lg p-1 cursor-pointer"
+                >
+                  <img src={img} className="w-full h-full object-cover rounded-md" />
+                </div>
+              ))}
+            </div>
+
+            {/* ADMIN */}
+            {isAdmin && (
+              <div className="flex md:flex-col gap-4 w-full md:w-fit">
+                <button onClick={handleUpdate} className="bg-blue-600 text-white p-2 rounded-lg">
+                  Edit
+                </button>
+                <button onClick={() => deleteImage(selectedProduct.id)} className="bg-red-600 text-white p-2 rounded-lg">
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
 
         </div>
-
       )}
-      {pageNo ?  <div className="w-full flex justify-center p-4">
-          <button onClick={() => navigate("/products")} className="p-2 px-4 cursor-pointer border hover:text-white hover:bg-black">View All Products</button>
-          </div> :" "}
+
+      {pageNo ? <div className="w-full flex justify-center p-4">
+        <button onClick={() => navigate("/products")} className="p-2 px-4 cursor-pointer border hover:text-white hover:bg-black">View All Products</button>
+      </div> : " "}
 
     </div>
   );

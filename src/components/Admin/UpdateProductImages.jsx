@@ -10,7 +10,7 @@ const UpdateProductImages = () => {
   const [images, setImages] = useState([]);
   const [mainIndex, setMainIndex] = useState(0);
   const [loading, setLoading] = useState(false);
-
+  const [description, setDescription] = useState("");
   const fileInputRef = useRef(null); // ✅ NEW
 
   const API = import.meta.env.VITE_API_URL;
@@ -41,7 +41,10 @@ const UpdateProductImages = () => {
 
       setImages(formatted);
       setMainIndex(0);
-
+      // ✅ NEW
+      setDescription(
+        typeof data.description === "string" ? data.description : ""
+      );
     } catch (err) {
       console.log(err);
       toast.error("Failed to load product images");
@@ -136,6 +139,9 @@ const UpdateProductImages = () => {
 
     const formData = new FormData();
 
+    // ✅ DESCRIPTION ADD
+    formData.append("description", description);
+
     const mainImage = images[mainIndex];
 
     if (mainImage?.isNew) {
@@ -151,7 +157,6 @@ const UpdateProductImages = () => {
     });
 
     try {
-
       setLoading(true);
 
       await axios.put(
@@ -166,18 +171,14 @@ const UpdateProductImages = () => {
 
       toast.success("Product updated successfully");
 
-      // ✅ 🔥 CORE FIX START
-
-      setImages([]);            // clear old state
-      setMainIndex(0);          // reset index
+      setImages([]);
+      setMainIndex(0);
 
       if (fileInputRef.current) {
-        fileInputRef.current.value = ""; // reset input
+        fileInputRef.current.value = "";
       }
 
-      await fetchProduct();     // reload fresh data from backend
-
-      // ✅ 🔥 CORE FIX END
+      await fetchProduct();
 
     } catch (err) {
       console.log(err);
@@ -185,7 +186,6 @@ const UpdateProductImages = () => {
     } finally {
       setLoading(false);
     }
-
   };
 
 
@@ -237,11 +237,10 @@ const UpdateProductImages = () => {
               <img
                 src={img.url}
                 alt=""
-                className={`h-32 w-full object-cover rounded-lg border-2 ${
-                  mainIndex === index
-                    ? "border-green-500"
-                    : "border-gray-300"
-                }`}
+                className={`h-32 w-full object-cover rounded-lg border-2 ${mainIndex === index
+                  ? "border-green-500"
+                  : "border-gray-300"
+                  }`}
                 onClick={() => setMain(index)}
               />
 
@@ -263,6 +262,20 @@ const UpdateProductImages = () => {
 
           ))}
 
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-semibold mb-1">
+            Product Description
+          </label>
+
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder={description ? "" : "Enter product description..."}
+            rows={3}
+            className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-black"
+
+          />
         </div>
 
         <button
