@@ -27,7 +27,7 @@ function Footer() {
 
                 {/* FOOTER */}
                 <footer className="bg-black text-white text-center py-4 text-sm">
-                    ©️ 2026 SAVMISHA GLOBAL TRENDS. All Rights Reserved.
+                    ©️ 2019 S. R. GARMENTS. All Rights Reserved.
                 </footer>
     </div>
       )

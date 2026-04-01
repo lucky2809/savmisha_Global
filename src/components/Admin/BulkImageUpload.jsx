@@ -2,10 +2,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const BulkImageUpload = () => {
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate()
+
 
     const API_URL = `${import.meta.env.VITE_API_URL}/images/bulk-upload`;
 
@@ -59,7 +62,7 @@ const BulkImageUpload = () => {
             });
 
             toast.success("Bulk Images Uploaded Successfully");
-
+            navigate('/products')
             setImages([]);
         } catch (error) {
             console.error(error);

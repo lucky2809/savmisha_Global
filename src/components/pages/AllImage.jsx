@@ -4,6 +4,7 @@ import useUserStore from "../../store/userStore";
 import { useNavigate } from "react-router-dom";
 import LazyImage from "../UI/LazyImage";
 import { toast } from "react-toastify";
+import { motion, AnimatePresence } from "framer-motion";
 
 function AllImage({ pageNo, limit = 4 }) {
 
@@ -12,7 +13,6 @@ function AllImage({ pageNo, limit = 4 }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [mainImage, setMainImage] = useState("");
 
-  // ✅ NEW STATES
   const [expandedItems, setExpandedItems] = useState({});
   const [expandedModal, setExpandedModal] = useState(false);
 
@@ -76,7 +76,7 @@ function AllImage({ pageNo, limit = 4 }) {
         return {
           id: item._id,
           title: "Product",
-          description: item.description || "", // ✅ ADDED
+          description: item.description || "",
           images: [
             HOST + item.mainImage,
             ...others,
@@ -142,40 +142,23 @@ function AllImage({ pageNo, limit = 4 }) {
   };
 
   useEffect(() => {
-    if (selectedProduct) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    const handleEsc = (e) => {
-      if (e.key === "Escape") setSelectedProduct(null);
-    };
-
-    window.addEventListener("keydown", handleEsc);
-
-    return () => {
-      document.body.style.overflow = "auto";
-      window.removeEventListener("keydown", handleEsc);
-    };
+    document.body.style.overflow = selectedProduct ? "hidden" : "auto";
   }, [selectedProduct]);
 
   return (
-
-    <div className="w-full px-3 md:px-10 lg:px-14">
+    <div className="w-full px-3 md:px-8 lg:px-12">
 
       {/* GRID */}
       <div
         ref={containerRef}
-        className={`grid lg:grid-cols-4 gap-5 p-2 lg:p-5 max-sm:gap-2 grid-cols-2 h-full ${pageNo ? "" : "overflow-auto"}`}
+        className={`grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 py-3 ${pageNo ? "" : "overflow-auto"
+          }`}
       >
 
         {products.map((item, index) => {
-
           const isLast = index === products.length - 1;
 
           return (
-
             <div
               key={item.id}
               ref={isLast ? lastProductRef : null}
@@ -184,36 +167,35 @@ function AllImage({ pageNo, limit = 4 }) {
                 setMainImage(item.images[0]);
                 setExpandedModal(false);
               }}
-              className="rounded-xl w-full border border-gray-300 overflow-hidden bg-white cursor-zoom-in"
+              className="group bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition duration-300 cursor-pointer"
             >
 
-              {/* IMAGE WRAPPER */}
-              <div className="relative group">
-
+              {/* IMAGE */}
+              <div className="relative overflow-hidden h-52 sm:h-56 md:h-64">
                 <LazyImage
                   src={item.images[0]}
                   alt={item.title}
-                  className="transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
 
-                {/* ✅ OVERLAY ONLY ON IMAGE */}
-                <div className="absolute inset-0 z-40 bg-black rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-70 transition-opacity duration-500">
-                  <p className="text-white text-2xl font-serif italic font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    view more
-                  </p>
+                {/* HOVER */}
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition duration-300">
+                  <span className="text-white text-base md:text-lg font-semibold">
+                    View More
+                  </span>
                 </div>
-
               </div>
 
-              {/* ✅ DESCRIPTION (NOW VISIBLE) */}
-              <div className="p-2">
-                <p className="text-gray-700 text-xs md:text-sm">
+              {/* CONTENT */}
+              <div className="p-3 flex flex-col justify-between min-h-[110px]">
+
+                <p className="text-gray-700 text-xs sm:text-sm leading-relaxed">
                   {expandedItems[item.id]
                     ? item.description
-                    : item.description?.slice(0, 60)}
+                    : item.description?.slice(0, 80)}
                 </p>
 
-                {item.description?.length > 60 && (
+                {item.description?.length > 80 && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -222,110 +204,150 @@ function AllImage({ pageNo, limit = 4 }) {
                         [item.id]: !prev[item.id]
                       }));
                     }}
-                    className="text-blue-600 text-xs mt-1 hover:underline"
+                    className="text-blue-600 text-xs mt-2 hover:underline self-start"
                   >
-                    {expandedItems[item.id] ? "Less" : "More"}
+                    {expandedItems[item.id] ? "Less" : "View More"}
                   </button>
                 )}
-              </div>
 
+              </div>
             </div>
           );
         })}
 
+        {/* SKELETON */}
+        {loading &&
+          Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-60 bg-gray-200 animate-pulse rounded-xl"
+            />
+          ))}
       </div>
+      {!hasMore && !loading && products.length > 0 && (
+        <div className="w-full flex justify-center py-8">
+          <p className="text-gray-400 text-sm md:text-base tracking-wide">
+            — No more products —
+          </p>
+        </div>
+      )}
 
       {/* MODAL */}
-      {selectedProduct && (
-
-        <div
-          className="fixed inset-0 bg-black/80 flex items-center justify-center z-[9999] px-5"
-          onMouseDown={handleOutsideClick}
-        >
-
-          <button
-            onClick={() => setSelectedProduct(null)}
-            className="hidden md:block absolute top-5 right-5 text-black md:text-white text-3xl cursor-pointer"
-          >
-            ✕
-          </button>
-
-          <div
-            ref={modalRef}
-            onMouseDown={(e) => e.stopPropagation()}
-            className="bg-gray-200 rounded-xl p-2 lg:p-5 max-w-4xl w-full flex flex-col md:flex-row gap-3"
+      <AnimatePresence>
+        {selectedProduct && (
+          <motion.div
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-[9999] px-3 sm:px-5"
+            onMouseDown={handleOutsideClick}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
 
+            {/* CLOSE BUTTON (DESKTOP) */}
             <button
               onClick={() => setSelectedProduct(null)}
-              className="md:hidden lg-hidden w-full flex justify-end text-black text-3xl cursor-pointer"
+              className="hidden md:flex absolute top-5 right-6 text-white text-3xl z-50"
             >
               ✕
             </button>
 
-            {/* IMAGE */}
-            <div className="flex-1 flex flex-col items-center">
+            <motion.div
+              ref={modalRef}
+              onMouseDown={(e) => e.stopPropagation()}
+              initial={{ scale: 0.9, y: 40 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 40 }}
+              transition={{ duration: 0.25 }}
+              className="bg-white rounded-xl w-full max-w-5xl p-3 sm:p-5 flex flex-col md:flex-row gap-4 relative"
+            >
 
-              <img
-                src={mainImage}
-                className="w-full max-h-[60vh] object-contain rounded-xl shadow-xl"
-              />
-
-              {/* ✅ MODAL DESCRIPTION */}
-              <div className="mt-3 w-full bg-white rounded-lg p-3">
-
-                <p className="text-gray-700 text-sm md:text-base text-center">
-                  {expandedModal
-                    ? selectedProduct.description
-                    : selectedProduct.description?.slice(0, 120)}
-                </p>
-
-                {selectedProduct.description?.length > 120 && (
-                  <button
-                    onClick={() => setExpandedModal(!expandedModal)}
-                    className="text-blue-600 text-sm mt-1 block mx-auto hover:underline"
-                  >
-                    {expandedModal ? "Less" : "More"}
-                  </button>
-                )}
-
-              </div>
-
-            </div>
-
-            {/* THUMBNAILS */}
-            <div className="grid grid-cols-2 md:flex md:flex-col gap-3 md:w-28">
-              {selectedProduct.thumbnails.map((img, i) => (
-                <div
-                  key={i}
-                  onClick={() => handleSetThumbnail(img)}
-                  className="border rounded-lg p-1 cursor-pointer"
+              {/* CLOSE BUTTON (MOBILE) */}
+              <div className="flex md:hidden justify-end">
+                <button
+                  onClick={() => setSelectedProduct(null)}
+                  className="text-black text-2xl"
                 >
-                  <img src={img} className="w-full h-full object-cover rounded-md" />
-                </div>
-              ))}
-            </div>
-
-            {/* ADMIN */}
-            {isAdmin && (
-              <div className="flex md:flex-col gap-4 w-full md:w-fit">
-                <button onClick={handleUpdate} className="bg-blue-600 text-white p-2 rounded-lg">
-                  Edit
-                </button>
-                <button onClick={() => deleteImage(selectedProduct.id)} className="bg-red-600 text-white p-2 rounded-lg">
-                  Delete
+                  ✕
                 </button>
               </div>
-            )}
-          </div>
 
+              {/* IMAGE */}
+              <div className="flex-1 flex flex-col items-center">
+                <img
+                  src={mainImage}
+                  className="w-full max-h-[55vh] object-contain rounded-lg"
+                />
+
+                {/* DESCRIPTION */}
+                <div className="mt-3 w-full bg-gray-100 rounded-lg p-3">
+                  <p className="text-gray-700 text-sm md:text-base text-center">
+                    {expandedModal
+                      ? selectedProduct.description
+                      : selectedProduct.description?.slice(0, 150)}
+                  </p>
+
+                  {selectedProduct.description?.length > 150 && (
+                    <button
+                      onClick={() => setExpandedModal(!expandedModal)}
+                      className="text-blue-600 text-sm mt-2 block mx-auto hover:underline"
+                    >
+                      {expandedModal ? "Less" : "View More"}
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* THUMBNAILS */}
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:flex md:flex-col gap-2 md:w-28">
+                {selectedProduct.thumbnails.map((img, i) => (
+                  <div
+                    key={i}
+                    onClick={() => handleSetThumbnail(img)}
+                    className={`border rounded-md p-1 cursor-pointer ${mainImage === img ? "border-blue-500" : ""
+                      }`}
+                  >
+                    <img
+                      src={img}
+                      className="w-full h-16 object-cover rounded"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* ADMIN */}
+              {isAdmin && (
+                <div className="flex md:flex-col gap-3 w-full md:w-fit">
+                  <button
+                    onClick={handleUpdate}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => deleteImage(selectedProduct.id)}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* VIEW ALL PRODUCTS (FIXED) */}
+      {pageNo && (
+        <div className="w-full flex justify-center py-6">
+          <button
+            onClick={() => navigate("/products")}
+            className="px-6 py-2 border border-black rounded-full hover:bg-black hover:text-white transition text-sm sm:text-base"
+          >
+            View All Products
+          </button>
         </div>
       )}
-
-      {pageNo ? <div className="w-full flex justify-center p-4">
-        <button onClick={() => navigate("/products")} className="p-2 px-4 cursor-pointer border hover:text-white hover:bg-black">View All Products</button>
-      </div> : " "}
-
     </div>
   );
 }

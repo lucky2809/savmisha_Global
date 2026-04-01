@@ -187,7 +187,7 @@ function Home() {
 
 
         {/* COMPANY STATS */}
-        <section className="lg:p-20 p-5 bg-gray-50">
+        {/* <section className="lg:p-20 p-5 bg-gray-50">
           <div className="mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
               { label: "Clients", value: "17+" },
@@ -209,7 +209,7 @@ function Home() {
               </div>
             ))}
           </div>
-        </section>
+        </section> */}
 
         {/* FACTORY GALLERY */}
         <section className="p-5 lg:p-20 bg-gray-100">

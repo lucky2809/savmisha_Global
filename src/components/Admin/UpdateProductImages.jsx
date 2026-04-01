@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react"; // ✅ useRef added
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const UpdateProductImages = () => {
@@ -15,7 +15,7 @@ const UpdateProductImages = () => {
 
   const API = import.meta.env.VITE_API_URL;
   const HOST = import.meta.env.VITE_API_URL;
-
+  const navigate = useNavigate()
 
   // ================= FETCH PRODUCT =================
 
@@ -170,7 +170,7 @@ const UpdateProductImages = () => {
       );
 
       toast.success("Product updated successfully");
-
+      navigate('/products')
       setImages([]);
       setMainIndex(0);
 
