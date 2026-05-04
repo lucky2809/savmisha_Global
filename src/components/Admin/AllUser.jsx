@@ -1,20 +1,28 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 
 function AllUser() {
   const [users, setAuth] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const getUsers = async () => {
-    try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/all-users`);
-      setAuth(res.data.users);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      setLoading(false);
+const getUsers = async () => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/all-users`
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch users");
     }
-  };
+
+    const res = await response.json();
+
+    setAuth(res.users);
+    setLoading(false);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     getUsers();

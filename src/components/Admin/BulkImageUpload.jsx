@@ -42,35 +42,40 @@ const BulkImageUpload = () => {
        Upload Images
     ======================== */
 
-    const handleSubmit = async () => {
-        if (!images.length) {
-            toast.error("Please select images");
-            return;
-        }
+ const handleSubmit = async () => {
+  if (!images.length) {
+    toast.error("Please select images");
+    return;
+  }
 
-        const formData = new FormData();
+  const formData = new FormData();
 
-        images.forEach((img) => {
-            formData.append("mainImages", img);
-        });
+  images.forEach((img) => {
+    formData.append("mainImages", img);
+  });
 
-        try {
-            setLoading(true);
+  try {
+    setLoading(true);
 
-            await axios.post(API_URL, formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-            });
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: formData,
+    });
 
-            toast.success("Bulk Images Uploaded Successfully");
-            navigate('/products')
-            setImages([]);
-        } catch (error) {
-            console.error(error);
-            toast.error("Upload Failed");
-        } finally {
-            setLoading(false);
-        }
-    };
+    if (!response.ok) {
+      throw new Error("Upload failed");
+    }
+
+    toast.success("Bulk Images Uploaded Successfully");
+    navigate("/products");
+    setImages([]);
+  } catch (error) {
+    console.error(error);
+    toast.error("Upload Failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
     return (
         <div className="bg-gray-100 flex justify-center items-center px-2 md:p-4 lg:p-4">

@@ -43,46 +43,49 @@ const ImageUpload = () => {
     }
   };
 
-  const handleSubmit = async () => {
+const handleSubmit = async () => {
+  const formData = new FormData();
 
-    const formData = new FormData();
+  // main image
+  formData.append("mainImage", images[mainIndex]);
 
-    // main image
-    formData.append("mainImage", images[mainIndex]);
+  // other images
+  images.forEach((img, i) => {
+    if (i !== mainIndex) {
+      formData.append("otherImages", img);
+    }
+  });
 
-    // other images
-    images.forEach((img, i) => {
-      if (i !== mainIndex) {
-        formData.append("otherImages", img);
-      }
+  // description
+  formData.append("description", description);
+
+  try {
+    setLoading(true);
+
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: formData,
     });
 
-    // ✅ ADD DESCRIPTION
-    formData.append("description", description);
-
-    try {
-      setLoading(true);
-
-      await axios.post(API_URL, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      toast.success("Product Uploaded Successfully");
-
-      // reset
-      setImages([]);
-      setMainIndex(0);
-      setDescription(""); // ✅ reset
-
-      navigate("/products");
-
-    } catch (err) {
-      console.error(err);
-      toast.error("Upload Failed");
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      throw new Error("Upload failed");
     }
-  };
+
+    toast.success("Product Uploaded Successfully");
+
+    // reset
+    setImages([]);
+    setMainIndex(0);
+    setDescription("");
+
+    navigate("/products");
+  } catch (err) {
+    console.error(err);
+    toast.error("Upload Failed");
+  } finally {
+    setLoading(false);
+  }
+};
   
 
   return (

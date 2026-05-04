@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from "react"; // ✅ useRef added
-import axios from "axios";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -11,18 +10,24 @@ const UpdateProductImages = () => {
   const [mainIndex, setMainIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
-  const fileInputRef = useRef(null); // ✅ NEW
+  const fileInputRef = useRef(null);
 
   const API = import.meta.env.VITE_API_URL;
   const HOST = import.meta.env.VITE_API_URL;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // ================= FETCH PRODUCT =================
 
-  const fetchProduct = async () => { // ✅ NEW FUNCTION
+  const fetchProduct = async () => {
     try {
-      const res = await axios.get(`${API}/images/${id}`);
-      const data = res.data.data;
+      const response = await fetch(`${API}/images/${id}`);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch product");
+      }
+
+      const res = await response.json();
+      const data = res.data;
 
       const formatted = [
         {
@@ -41,10 +46,10 @@ const UpdateProductImages = () => {
 
       setImages(formatted);
       setMainIndex(0);
-      // ✅ NEW
       setDescription(
         typeof data.description === "string" ? data.description : ""
       );
+
     } catch (err) {
       console.log(err);
       toast.error("Failed to load product images");
@@ -52,9 +57,8 @@ const UpdateProductImages = () => {
   };
 
   useEffect(() => {
-    fetchProduct(); // ✅ USE HERE
+    fetchProduct();
   }, [id]);
-
 
   // ================= ADD NEW IMAGES =================
 
@@ -79,7 +83,6 @@ const UpdateProductImages = () => {
     setImages(combined);
   };
 
-
   // ================= REMOVE IMAGE =================
 
   const removeImage = async (index) => {
@@ -89,9 +92,19 @@ const UpdateProductImages = () => {
     try {
 
       if (!img.isNew) {
-        await axios.put(`${API}/images/update-action/${id}`, {
-          deleteImage: img.path
+        const response = await fetch(`${API}/images/update-action/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            deleteImage: img.path
+          }),
         });
+
+        if (!response.ok) {
+          throw new Error("Delete failed");
+        }
       }
 
       const updated = images.filter((_, i) => i !== index);
@@ -105,9 +118,7 @@ const UpdateProductImages = () => {
       console.log(err);
       toast.error("Delete failed");
     }
-
   };
-
 
   // ================= SET MAIN IMAGE =================
 
@@ -118,9 +129,19 @@ const UpdateProductImages = () => {
     try {
 
       if (!img.isNew) {
-        await axios.put(`${API}/images/update-action/${id}`, {
-          setMain: img.path
+        const response = await fetch(`${API}/images/update-action/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            setMain: img.path
+          }),
         });
+
+        if (!response.ok) {
+          throw new Error("Main update failed");
+        }
       }
 
       setMainIndex(index);
@@ -129,9 +150,7 @@ const UpdateProductImages = () => {
       console.log(err);
       toast.error("Main image update failed");
     }
-
   };
-
 
   // ================= UPDATE PRODUCT =================
 
@@ -139,7 +158,6 @@ const UpdateProductImages = () => {
 
     const formData = new FormData();
 
-    // ✅ DESCRIPTION ADD
     formData.append("description", description);
 
     const mainImage = images[mainIndex];
@@ -159,18 +177,20 @@ const UpdateProductImages = () => {
     try {
       setLoading(true);
 
-      await axios.put(
+      const response = await fetch(
         `${API}/images/update-images/${id}`,
-        formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
+          method: "PUT",
+          body: formData,
         }
       );
 
+      if (!response.ok) {
+        throw new Error("Update failed");
+      }
+
       toast.success("Product updated successfully");
-      navigate('/products')
+      navigate('/products');
       setImages([]);
       setMainIndex(0);
 
@@ -187,7 +207,6 @@ const UpdateProductImages = () => {
       setLoading(false);
     }
   };
-
 
   // ================= UI =================
 
@@ -208,7 +227,7 @@ const UpdateProductImages = () => {
           <div className="border w-fit p-2 border-orange-700">
 
             <input
-              ref={fileInputRef} // ✅ IMPORTANT
+              ref={fileInputRef}
               type="file"
               multiple
               accept="image/*"
@@ -237,10 +256,11 @@ const UpdateProductImages = () => {
               <img
                 src={img.url}
                 alt=""
-                className={`h-32 w-full object-cover rounded-lg border-2 ${mainIndex === index
-                  ? "border-green-500"
-                  : "border-gray-300"
-                  }`}
+                className={`h-32 w-full object-cover rounded-lg border-2 ${
+                  mainIndex === index
+                    ? "border-green-500"
+                    : "border-gray-300"
+                }`}
                 onClick={() => setMain(index)}
               />
 
@@ -263,6 +283,7 @@ const UpdateProductImages = () => {
           ))}
 
         </div>
+
         <div className="mb-4">
           <label className="block text-sm font-semibold mb-1">
             Product Description
@@ -274,7 +295,6 @@ const UpdateProductImages = () => {
             placeholder={description ? "" : "Enter product description..."}
             rows={3}
             className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-black"
-
           />
         </div>
 
@@ -283,9 +303,7 @@ const UpdateProductImages = () => {
           disabled={loading}
           className="w-full bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition disabled:opacity-50 cursor-pointer"
         >
-
           {loading ? "Updating..." : "Update Product"}
-
         </button>
 
       </div>

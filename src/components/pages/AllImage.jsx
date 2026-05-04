@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import axios from "axios";
 import useUserStore from "../../store/userStore";
 import { useNavigate } from "react-router-dom";
 import LazyImage from "../UI/LazyImage";
@@ -55,71 +54,81 @@ function AllImage({ pageNo, limit = 4 }) {
 
   }, [loading, hasMore]);
 
-  const fetchImages = async () => {
-    try {
-      if (!hasMore) return;
+const fetchImages = async () => {
+  try {
+    if (!hasMore) return;
 
-      setLoading(true);
+    setLoading(true);
 
-      const res = await axios.get(GET_API);
+    const response = await fetch(GET_API);
 
-      const formattedData = res.data.data.map((item) => {
-
-        const others = [...item.otherImages]
-          .filter(Boolean)
-          .map((img) => HOST + img);
-
-        const otherThumb = [...item.otherThumbnails]
-          .filter(Boolean)
-          .map((img) => HOST + img);
-
-        return {
-          id: item._id,
-          title: "Product",
-          description: item.description || "",
-          images: [
-            HOST + item.mainImage,
-            ...others,
-          ],
-          thumbnails: [
-            HOST + item.mainThumbnail,
-            ...otherThumb
-          ]
-        };
-      });
-
-      setProducts((prev) => {
-        const existingIds = new Set(prev.map(p => p.id));
-        const newItems = formattedData.filter(item => !existingIds.has(item.id));
-        return [...prev, ...newItems];
-      });
-
-      setHasMore(res.data.hasMore);
-
-    } catch (error) {
-      console.error("GET IMAGES ERROR:", error);
-    } finally {
-      setLoading(false);
-      isFetching.current = false;
+    if (!response.ok) {
+      throw new Error("Failed to fetch images");
     }
-  };
+
+    const res = await response.json();
+
+    const formattedData = res.data.map((item) => {
+      const others = [...item.otherImages]
+        .filter(Boolean)
+        .map((img) => HOST + img);
+
+      const otherThumb = [...item.otherThumbnails]
+        .filter(Boolean)
+        .map((img) => HOST + img);
+
+      return {
+        id: item._id,
+        title: "Product",
+        description: item.description || "",
+        images: [HOST + item.mainImage, ...others],
+        thumbnails: [HOST + item.mainThumbnail, ...otherThumb],
+      };
+    });
+
+    setProducts((prev) => {
+      const existingIds = new Set(prev.map((p) => p.id));
+      const newItems = formattedData.filter(
+        (item) => !existingIds.has(item.id)
+      );
+      return [...prev, ...newItems];
+    });
+
+    setHasMore(res.hasMore);
+  } catch (error) {
+    console.error("GET IMAGES ERROR:", error);
+  } finally {
+    setLoading(false);
+    isFetching.current = false;
+  }
+};
 
   useEffect(() => {
     fetchImages();
   }, [page]);
 
-  const deleteImage = async (id) => {
-    try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/images/delete/${id}`);
-      setProducts((prev) => prev.filter((item) => item.id !== id));
-      setSelectedProduct(null);
-      setMainImage("");
-      toast.success("Deleted successfully");
-      navigate("/products");
-    } catch (err) {
-      toast.error("Delete failed");
+const deleteImage = async (id) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/images/delete/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Delete failed");
     }
-  };
+
+    setProducts((prev) => prev.filter((item) => item.id !== id));
+    setSelectedProduct(null);
+    setMainImage("");
+    toast.success("Deleted successfully");
+    navigate("/products");
+  } catch (err) {
+    toast.error("Delete failed");
+  }
+};
 
   const handleUpdate = () => {
     if (!selectedProduct?.id) return;
