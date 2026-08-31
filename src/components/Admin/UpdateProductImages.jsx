@@ -11,6 +11,7 @@ import {
   PageHeader,
   Skeleton,
 } from "./ui";
+import ProductFields from "./ProductFields";
 
 const MAX_IMAGES = 5;
 
@@ -21,6 +22,9 @@ export default function UpdateProductImages() {
   const [images, setImages] = useState([]);
   const [mainIndex, setMainIndex] = useState(0);
   const [description, setDescription] = useState("");
+  const [serialNumber, setSerialNumber] = useState("");
+  const [sizes, setSizes] = useState([]);
+  const [colors, setColors] = useState([]);
   const [fetching, setFetching] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -57,6 +61,9 @@ export default function UpdateProductImages() {
       setImages(formatted);
       setMainIndex(0);
       setDescription(typeof data.description === "string" ? data.description : "");
+      setSerialNumber(data.serialNumber || "");
+      setSizes(Array.isArray(data.sizes) ? data.sizes : []);
+      setColors(Array.isArray(data.colors) ? data.colors : []);
     } catch (err) {
       setError(err.message || "Failed to load product");
     } finally {
@@ -140,6 +147,9 @@ export default function UpdateProductImages() {
 
     const formData = new FormData();
     formData.append("description", description);
+    formData.append("serialNumber", serialNumber.trim());
+    formData.append("sizes", JSON.stringify(sizes));
+    formData.append("colors", JSON.stringify(colors));
 
     const mainImage = images[mainIndex];
     if (mainImage?.isNew) {
@@ -271,6 +281,18 @@ export default function UpdateProductImages() {
                 )
               )}
             </div>
+          </Card>
+
+          <Card>
+            <ProductFields
+              serialNumber={serialNumber}
+              onSerialChange={setSerialNumber}
+              sizes={sizes}
+              onSizesChange={setSizes}
+              colors={colors}
+              onColorsChange={setColors}
+              disabled={loading || fetching}
+            />
           </Card>
 
           <Card>

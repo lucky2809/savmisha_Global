@@ -19,17 +19,33 @@ export const assetUrl = (path) => {
   return `${API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
 };
 
+/** The persisted zustand store is the source of truth; the bare key is legacy. */
+export function getToken() {
+  try {
+    const raw = localStorage.getItem("auth-storage");
+    const fromStore = raw ? JSON.parse(raw)?.state?.token : null;
+    return fromStore || localStorage.getItem("access_token") || null;
+  } catch {
+    return localStorage.getItem("access_token") || null;
+  }
+}
+
 /**
  * The backend answers with { message } on failure and sometimes with
  * { success: false } and HTTP 200. Both are treated as errors, and the
  * server's own wording is preserved instead of a generic "Upload failed".
  */
-async function request(path, { method = "GET", body, headers, signal } = {}) {
+async function request(path, { method = "GET", body, headers, signal, auth } = {}) {
   if (!API_BASE) {
     throw new Error("VITE_API_URL is not configured");
   }
 
   const isFormData = body instanceof FormData;
+
+  const token = auth ? getToken() : null;
+  if (auth && !token) {
+    throw new Error("Please sign in to continue");
+  }
 
   const res = await fetch(`${API_BASE}${path}`, {
     method,
@@ -38,6 +54,7 @@ async function request(path, { method = "GET", body, headers, signal } = {}) {
       ...(isFormData || body === undefined
         ? {}
         : { "Content-Type": "application/json" }),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },
     body: isFormData ? body : body === undefined ? undefined : JSON.stringify(body),
@@ -74,7 +91,20 @@ export const api = {
   get: (path, opts) => request(path, { ...opts, method: "GET" }),
   post: (path, body, opts) => request(path, { ...opts, method: "POST", body }),
   put: (path, body, opts) => request(path, { ...opts, method: "PUT", body }),
+  patch: (path, body, opts) => request(path, { ...opts, method: "PATCH", body }),
   del: (path, opts) => request(path, { ...opts, method: "DELETE" }),
+};
+
+/** Same verbs, but the request carries the bearer token and fails fast without one. */
+export const authApi = {
+  get: (path, opts) => request(path, { ...opts, method: "GET", auth: true }),
+  post: (path, body, opts) =>
+    request(path, { ...opts, method: "POST", body, auth: true }),
+  put: (path, body, opts) =>
+    request(path, { ...opts, method: "PUT", body, auth: true }),
+  patch: (path, body, opts) =>
+    request(path, { ...opts, method: "PATCH", body, auth: true }),
+  del: (path, opts) => request(path, { ...opts, method: "DELETE", auth: true }),
 };
 
 /**

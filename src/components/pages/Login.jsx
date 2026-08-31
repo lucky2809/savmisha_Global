@@ -206,6 +206,20 @@ function Login() {
               </Link>
             </div>
 
+            {/* PASSWORDLESS ALTERNATIVE */}
+            <div className='flex items-center gap-3 py-1'>
+              <span className='h-px flex-1 bg-gray-200' />
+              <span className='text-xs text-gray-400'>or</span>
+              <span className='h-px flex-1 bg-gray-200' />
+            </div>
+
+            <Link
+              to={'/login-otp'}
+              className='block w-full rounded-xl border border-gray-300 py-2 text-center font-semibold text-gray-700 transition hover:bg-gray-50'
+            >
+              Sign in with email code
+            </Link>
+
             {/* LOGIN BUTTON */}
             <button
               onClick={signInHandler}

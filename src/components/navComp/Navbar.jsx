@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { FaWhatsapp } from 'react-icons/fa'
 import { Link, useLocation } from 'react-router-dom'
 import Profile from '../pages/Profile'
+import NotificationBell from './NotificationBell'
+import CartButton from './CartButton'
 
 function Navbar() {
   const [show, setShow] = useState(true)
@@ -118,7 +120,9 @@ function Navbar() {
                 </Link>
               </li>
 
-              <li className='cursor-pointer transition'>
+              <li className='flex items-center gap-1'>
+                <NotificationBell />
+                <CartButton />
                 <Profile />
               </li>
 
@@ -147,7 +151,9 @@ function Navbar() {
             </a>
           </div>
         </div>
-        <div className='lg:hidden flex items-center'>
+        <div className='lg:hidden flex items-center gap-0.5'>
+          <NotificationBell />
+          <CartButton />
           <Profile />
         </div>
         {/* Hamburger / Cross Button */}

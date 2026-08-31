@@ -2,18 +2,19 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import useUserStore from "../../store/userStore";
 import { useNavigate } from "react-router-dom";
 import LazyImage from "../UI/LazyImage";
+import ProductDetailModal from "./ProductDetailModal";
 import { toast } from "react-toastify";
-import { motion, AnimatePresence } from "framer-motion";
+// motion is aliased: without eslint-plugin-react a lowercase identifier
+// used only inside JSX is reported as unused.
+import { motion as Motion, AnimatePresence } from "framer-motion";
 
 function AllImage({ pageNo, limit = 4 }) {
 
   const [page, setPage] = useState(1);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [mainImage, setMainImage] = useState("");
 
   const [expandedItems, setExpandedItems] = useState({});
-  const [expandedModal, setExpandedModal] = useState(false);
 
   const navigate = useNavigate();
   const [hasMore, setHasMore] = useState(true);
@@ -81,6 +82,11 @@ const fetchImages = async () => {
         id: item._id,
         title: "Product",
         description: item.description || "",
+        serialNumber: item.serialNumber || "",
+        sizes: Array.isArray(item.sizes) ? item.sizes : [],
+        colors: Array.isArray(item.colors) ? item.colors : [],
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
         images: [HOST + item.mainImage, ...others],
         thumbnails: [HOST + item.mainThumbnail, ...otherThumb],
       };
@@ -122,11 +128,10 @@ const deleteImage = async (id) => {
 
     setProducts((prev) => prev.filter((item) => item.id !== id));
     setSelectedProduct(null);
-    setMainImage("");
     toast.success("Deleted successfully");
     navigate("/products");
   } catch (err) {
-    toast.error("Delete failed");
+    toast.error(err?.message || "Delete failed");
   }
 };
 
@@ -135,14 +140,6 @@ const deleteImage = async (id) => {
     navigate(`/dashboard/updateproductimages/${selectedProduct.id}`);
   };
 
-  const thumbnailToImage = (thumbPath) => {
-    if (!thumbPath) return null;
-    return thumbPath.replace(/_thumb\.webp$/i, ".webp");
-  };
-
-  const handleSetThumbnail = (thumb = "") => {
-    setMainImage(thumbnailToImage(thumb));
-  };
 
   const handleOutsideClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -171,11 +168,7 @@ const deleteImage = async (id) => {
             <div
               key={item.id}
               ref={isLast ? lastProductRef : null}
-              onClick={() => {
-                setSelectedProduct(item);
-                setMainImage(item.images[0]);
-                setExpandedModal(false);
-              }}
+              onClick={() => setSelectedProduct(item)}
               className="group bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition duration-300 cursor-pointer"
             >
 
@@ -219,6 +212,49 @@ const deleteImage = async (id) => {
                   </button>
                 )}
 
+                {/* Sizes and colours. Serial number is intentionally not shown
+                    on the storefront - it is only on the detail view. */}
+                {(item.sizes?.length > 0 || item.colors?.length > 0) && (
+                  <div className="mt-2 flex flex-col gap-1.5">
+                    {item.sizes?.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1">
+                        <span className="text-[10px] uppercase tracking-wide text-gray-400">
+                          Sizes
+                        </span>
+                        {item.sizes.map((s) => (
+                          <span
+                            key={s}
+                            className="rounded border border-gray-300 px-1.5 py-0.5 text-[10px] font-semibold text-gray-700"
+                          >
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {item.colors?.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1">
+                        <span className="text-[10px] uppercase tracking-wide text-gray-400">
+                          Colours
+                        </span>
+                        {item.colors.slice(0, 3).map((c) => (
+                          <span
+                            key={c}
+                            className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-700"
+                          >
+                            {c}
+                          </span>
+                        ))}
+                        {item.colors.length > 3 && (
+                          <span className="text-[10px] text-gray-400">
+                            +{item.colors.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
               </div>
             </div>
           );
@@ -244,105 +280,23 @@ const deleteImage = async (id) => {
       {/* MODAL */}
       <AnimatePresence>
         {selectedProduct && (
-          <motion.div
+          <Motion.div
             className="fixed inset-0 bg-black/80 flex items-center justify-center z-[9999] px-3 sm:px-5"
             onMouseDown={handleOutsideClick}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-
-            {/* CLOSE BUTTON (DESKTOP) */}
-            <button
-              onClick={() => setSelectedProduct(null)}
-              className="hidden md:flex absolute top-5 right-6 text-white text-3xl z-50"
-            >
-              ✕
-            </button>
-
-            <motion.div
-              ref={modalRef}
-              onMouseDown={(e) => e.stopPropagation()}
-              initial={{ scale: 0.9, y: 40 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 40 }}
-              transition={{ duration: 0.25 }}
-              className="bg-white rounded-xl w-full max-w-5xl p-3 sm:p-5 flex flex-col md:flex-row gap-4 relative"
-            >
-
-              {/* CLOSE BUTTON (MOBILE) */}
-              <div className="flex md:hidden justify-end">
-                <button
-                  onClick={() => setSelectedProduct(null)}
-                  className="text-black text-2xl"
-                >
-                  ✕
-                </button>
-              </div>
-
-              {/* IMAGE */}
-              <div className="flex-1 flex flex-col items-center">
-                <img
-                  src={mainImage}
-                  className="w-full max-h-[55vh] object-contain rounded-lg"
-                />
-
-                {/* DESCRIPTION */}
-                <div className="mt-3 w-full bg-gray-100 rounded-lg p-3">
-                  <p className="text-gray-700 text-sm md:text-base text-center">
-                    {expandedModal
-                      ? selectedProduct.description
-                      : selectedProduct.description?.slice(0, 150)}
-                  </p>
-
-                  {selectedProduct.description?.length > 150 && (
-                    <button
-                      onClick={() => setExpandedModal(!expandedModal)}
-                      className="text-blue-600 text-sm mt-2 block mx-auto hover:underline"
-                    >
-                      {expandedModal ? "Less" : "View More"}
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* THUMBNAILS */}
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:flex md:flex-col gap-2 md:w-28">
-                {selectedProduct.thumbnails.map((img, i) => (
-                  <div
-                    key={i}
-                    onClick={() => handleSetThumbnail(img)}
-                    className={`border rounded-md p-1 cursor-pointer ${mainImage === img ? "border-blue-500" : ""
-                      }`}
-                  >
-                    <img
-                      src={img}
-                      className="w-full h-16 object-cover rounded"
-                    />
-                  </div>
-                ))}
-              </div>
-
-              {/* ADMIN */}
-              {isAdmin && (
-                <div className="flex md:flex-col gap-3 w-full md:w-fit">
-                  <button
-                    onClick={handleUpdate}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => deleteImage(selectedProduct.id)}
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
-                  >
-                    Delete
-                  </button>
-                </div>
-              )}
-
-            </motion.div>
-          </motion.div>
+            <div ref={modalRef} className="w-full max-w-5xl">
+              <ProductDetailModal
+                product={selectedProduct}
+                onClose={() => setSelectedProduct(null)}
+                isAdmin={isAdmin}
+                onEdit={handleUpdate}
+                onDelete={deleteImage}
+              />
+            </div>
+          </Motion.div>
         )}
       </AnimatePresence>
 

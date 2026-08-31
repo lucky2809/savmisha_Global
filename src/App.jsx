@@ -11,6 +11,10 @@ import ImageUpload from './components/Admin/ImageUpload'
 import ProtectedRoute from './components/Auth/ProtectedRoute'
 import DashboardRoot from './components/Admin/DashboardRoot'
 import DashboardHome from './components/Admin/DashboardHome'
+import AdminOrders from './components/Admin/AdminOrders'
+import Cart from './components/pages/Cart'
+import MyOrders from './components/pages/MyOrders'
+import OtpLogin from './components/pages/OtpLogin'
 import AllUser from './components/Admin/AllUser'
 import About from './components/pages/About'
 import Contact from './components/pages/Contact'
@@ -55,6 +59,9 @@ function App() {
             {/* <Route path='/shop' element={<Shop />} /> */}
             <Route path='/login' element={<PublicRoute><Login /></PublicRoute>} />
             <Route path='/signup' element={<Signup />} />
+            <Route path='/login-otp' element={<PublicRoute><OtpLogin /></PublicRoute>} />
+            <Route path='/cart' element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+            <Route path='/orders' element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
             <Route path='/about' element={<About />} />
             <Route path='/forgetpassword' element={<ForgotPasswordFlow />} />
             <Route path='/contact' element={<Contact />} />
@@ -69,6 +76,7 @@ function App() {
               <Route index element={<DashboardHome />} />        {/* Overview */}
               <Route path="upload" element={<ImageUpload />} />   {/* Image Upload */}
               <Route path="users" element={<AllUser />} />       {/* All Users */}
+              <Route path="orders" element={<AdminOrders />} />  {/* Customer Orders */}
               <Route path="bulkImagepload" element={<BulkImageUpload />} />       {/* Bulk Image Upload */}
               <Route path="updateproductimages/:id" element={<ProtectedRoute><UpdateProductImages /></ProtectedRoute>} />       {/* Image Update */}
             </Route>

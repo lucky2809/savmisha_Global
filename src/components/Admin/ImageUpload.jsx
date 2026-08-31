@@ -14,6 +14,7 @@ import { Badge, Button, Card, CardHeader, PageHeader } from "./ui";
 import SocialToggles from "./SocialToggles";
 import { PLATFORMS, useSocialSync } from "../../lib/socialSync";
 import ImageEditorModal from "./ImageEditorModal";
+import ProductFields from "./ProductFields";
 
 const MIN_IMAGES = 1;
 const MAX_IMAGES = 5;
@@ -24,6 +25,9 @@ export default function ImageUpload() {
   const [previews, setPreviews] = useState([]);
   const [mainIndex, setMainIndex] = useState(0);
   const [description, setDescription] = useState("");
+  const [serialNumber, setSerialNumber] = useState("");
+  const [sizes, setSizes] = useState([]);
+  const [colors, setColors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState(null);
@@ -98,6 +102,9 @@ export default function ImageUpload() {
     formData.append("description", description.trim());
     formData.append("postToFacebook", String(sync.facebook));
     formData.append("postToInstagram", String(sync.instagram));
+    formData.append("serialNumber", serialNumber.trim());
+    formData.append("sizes", JSON.stringify(sizes));
+    formData.append("colors", JSON.stringify(colors));
 
     setLoading(true);
     setProgress(0);
@@ -110,6 +117,9 @@ export default function ImageUpload() {
       setImages([]);
       setMainIndex(0);
       setDescription("");
+      setSerialNumber("");
+      setSizes([]);
+      setColors([]);
 
       const social = data?.social ?? data?.data?.socialStatus;
       const requested = PLATFORMS.filter((p) => sync[p.key]);
@@ -234,6 +244,18 @@ export default function ImageUpload() {
                 </div>
               )}
             </div>
+          </Card>
+
+          <Card>
+            <ProductFields
+              serialNumber={serialNumber}
+              onSerialChange={setSerialNumber}
+              sizes={sizes}
+              onSizesChange={setSizes}
+              colors={colors}
+              onColorsChange={setColors}
+              disabled={loading}
+            />
           </Card>
 
           <Card>

@@ -5,6 +5,7 @@ import {
   MdOutlineCloudUpload,
   MdOutlinePhotoLibrary,
   MdOutlinePeopleAlt,
+  MdOutlineReceiptLong,
   MdMenu,
   MdClose,
   MdChevronLeft,
@@ -18,6 +19,7 @@ const NAV_ITEMS = [
   { label: "Overview", to: "/dashboard", icon: MdOutlineDashboard, end: true },
   { label: "Upload Product", to: "/dashboard/upload", icon: MdOutlineCloudUpload },
   { label: "Bulk Upload", to: "/dashboard/bulkImagepload", icon: MdOutlinePhotoLibrary },
+  { label: "Orders", to: "/dashboard/orders", icon: MdOutlineReceiptLong },
   { label: "Users", to: "/dashboard/users", icon: MdOutlinePeopleAlt },
 ];
 
