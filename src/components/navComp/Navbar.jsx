@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FaWhatsapp } from 'react-icons/fa'
 import { Link, useLocation } from 'react-router-dom'
 import Profile from '../pages/Profile'
@@ -10,6 +10,7 @@ import CartButton from './CartButton'
 function Navbar() {
   // Orders only mean anything to a signed-in customer.
   const token = useUserStore((s) => s.token)
+  const navRef = useRef(null)
   const [show, setShow] = useState(true)
   const [open, setOpen] = useState(false)
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -49,11 +50,39 @@ function Navbar() {
     }
   }, [open])
 
+  // The bar is fixed, so it takes no space in flow and every page has to
+  // offset itself. Its height changes with the logo and the breakpoint, so
+  // hardcoded padding was always going to be wrong somewhere - publish the
+  // measured height instead and let pages consume it.
+  useEffect(() => {
+    const el = navRef.current
+    if (!el) return undefined
+
+    const publish = () => {
+      document.documentElement.style.setProperty(
+        '--nav-h',
+        `${el.offsetHeight}px`
+      )
+    }
+
+    publish()
+
+    const observer = new ResizeObserver(publish)
+    observer.observe(el)
+    window.addEventListener('resize', publish)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', publish)
+    }
+  }, [])
+
   // 🔥 Active link check function
   const isActive = (path) => location.pathname === path
 
   return (
     <div
+      ref={navRef}
       className={`
         fixed top-0 left-0 w-full z-50
         transition-all duration-500 ease-in-out bg-white shadow-sm shadow-amber-100

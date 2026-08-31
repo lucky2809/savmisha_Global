@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { MdArrowBack, MdMailOutline, MdErrorOutline } from "react-icons/md";
 import Navbar from "../navComp/Navbar";
+import NavSpacer from "../navComp/NavSpacer";
 import { api } from "../../lib/api";
 import useUserStore from "../../store/userStore";
 
@@ -100,8 +101,9 @@ export default function OtpLogin() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
+      <NavSpacer />
 
-      <main className="flex items-center justify-center px-4 pt-28 pb-16 lg:pt-36 my-12">
+      <main className="flex items-center justify-center px-4 pt-8 pb-16">
         <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-lg sm:p-8">
           <div className="mb-6 text-center">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">

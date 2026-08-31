@@ -1,5 +1,6 @@
 import Footer from "../navComp/Footer";
 import Navbar from "../navComp/Navbar";
+import NavSpacer from "../navComp/NavSpacer";
 import Contact from "./Contact";
 
 
@@ -7,7 +8,8 @@ const About = () => {
     return (
         <div>
             <Navbar />
-            <div className="mt-20 lg:mt-40  text-gray-800 leading-relaxed">
+            <NavSpacer />
+            <div className="text-gray-800 leading-relaxed">
 
                 {/* HERO SECTION */}
                 <section

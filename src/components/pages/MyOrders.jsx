@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MdInventory2, MdRefresh } from "react-icons/md";
 import Navbar from "../navComp/Navbar";
+import NavSpacer from "../navComp/NavSpacer";
 import Footer from "../navComp/Footer";
 import { authApi, assetUrl } from "../../lib/api";
 import {
@@ -77,8 +78,9 @@ export default function MyOrders() {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
+      <NavSpacer />
 
-      <main className="flex-1 px-4 pt-24 pb-14 lg:pt-32">
+      <main className="flex-1 px-4 pt-6 pb-14">
         <div className="mx-auto max-w-5xl">
           <div className="mb-6 flex items-end justify-between gap-4">
             <div>

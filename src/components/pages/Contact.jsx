@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 // import MapView from './MapView'
 import Footer from '../navComp/Footer'
 import Navbar from '../navComp/Navbar'
+import NavSpacer from '../navComp/NavSpacer'
 import { FaWhatsapp, FaInstagram, FaEnvelope } from "react-icons/fa";
 
 
@@ -10,9 +11,10 @@ function Contact({ margin = "mt-20", active = "visible" }) {
     return (
         <div>
             <div><Navbar /></div>
+            <NavSpacer />
 
             {/* Hero Section */}
-            <section className={`${active} bg-black text-white py-5 lg:py-16 gap-4 lg:gap-8 text-center lg:mt-40 ${margin}`}>
+            <section className={`${active} bg-black text-white py-5 lg:py-16 gap-4 lg:gap-8 text-center ${margin}`}>
                 <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
                 <p className="text-lg max-w-2xl mx-auto">
                     We would love to hear from you. If you are looking for high quality

@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from '../navComp/Navbar'
+import NavSpacer from '../navComp/NavSpacer'
 import AllImage from './AllImage'
 import ImageUpload from '../Admin/ImageUpload'
 import Contact from './Contact'
@@ -13,7 +14,8 @@ function Home() {
   return (
     <div>
       <div><Navbar /></div>
-      <div className='mt-20 lg:mt-39'>
+      <NavSpacer />
+      <div>
         {/* <div><SwiperSlider /></div> */}
 
 
