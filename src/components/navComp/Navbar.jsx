@@ -78,7 +78,7 @@ function Navbar() {
 
           {/* Desktop Menu */}
           <div className='hidden lg:flex lg:visible'>
-            <ul className='lg:flex lg:flex-wrap justify-center text-center lg:gap-5 gap-7  text-md font-semibold'>
+            <ul className='lg:flex lg:flex-wrap justify-center text-center lg:gap-5 gap-7  text-md font-semibold items-center'>
 
               <li className='cursor-pointer transition'>
                 <Link

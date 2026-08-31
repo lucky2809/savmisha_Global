@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import useUserStore from "../../store/userStore";
 import { useNavigate } from "react-router-dom";
-import LazyImage from "../UI/LazyImage";
 import ProductDetailModal from "./ProductDetailModal";
+import ProductCard from "./ProductCard";
 import { toast } from "react-toastify";
 // motion is aliased: without eslint-plugin-react a lowercase identifier
 // used only inside JSX is reported as unused.
@@ -14,7 +14,6 @@ function AllImage({ pageNo, limit = 4 }) {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const [expandedItems, setExpandedItems] = useState({});
 
   const navigate = useNavigate();
   const [hasMore, setHasMore] = useState(true);
@@ -157,116 +156,33 @@ const deleteImage = async (id) => {
       {/* GRID */}
       <div
         ref={containerRef}
-        className={`grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 py-3 ${pageNo ? "" : "overflow-auto"
+        className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 py-3 items-stretch ${pageNo ? "" : "overflow-auto"
           }`}
       >
 
-        {products.map((item, index) => {
-          const isLast = index === products.length - 1;
-
-          return (
-            <div
-              key={item.id}
-              ref={isLast ? lastProductRef : null}
-              onClick={() => setSelectedProduct(item)}
-              className="group bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition duration-300 cursor-pointer"
-            >
-
-              {/* IMAGE */}
-              <div className="relative overflow-hidden h-52 sm:h-56 md:h-64">
-                <LazyImage
-                  src={item.images[0]}
-                  alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-
-                {/* HOVER */}
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition duration-300">
-                  <span className="text-white text-base md:text-lg font-semibold">
-                    View More
-                  </span>
-                </div>
-              </div>
-
-              {/* CONTENT */}
-              <div className="p-3 flex flex-col justify-between min-h-[110px]">
-
-                <p className="text-gray-700 text-xs sm:text-sm leading-relaxed">
-                  {expandedItems[item.id]
-                    ? item.description
-                    : item.description?.slice(0, 80)}
-                </p>
-
-                {item.description?.length > 80 && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setExpandedItems(prev => ({
-                        ...prev,
-                        [item.id]: !prev[item.id]
-                      }));
-                    }}
-                    className="text-blue-600 text-xs mt-2 hover:underline self-start"
-                  >
-                    {expandedItems[item.id] ? "Less" : "View More"}
-                  </button>
-                )}
-
-                {/* Sizes and colours. Serial number is intentionally not shown
-                    on the storefront - it is only on the detail view. */}
-                {(item.sizes?.length > 0 || item.colors?.length > 0) && (
-                  <div className="mt-2 flex flex-col gap-1.5">
-                    {item.sizes?.length > 0 && (
-                      <div className="flex flex-wrap items-center gap-1">
-                        <span className="text-[10px] uppercase tracking-wide text-gray-400">
-                          Sizes
-                        </span>
-                        {item.sizes.map((s) => (
-                          <span
-                            key={s}
-                            className="rounded border border-gray-300 px-1.5 py-0.5 text-[10px] font-semibold text-gray-700"
-                          >
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {item.colors?.length > 0 && (
-                      <div className="flex flex-wrap items-center gap-1">
-                        <span className="text-[10px] uppercase tracking-wide text-gray-400">
-                          Colours
-                        </span>
-                        {item.colors.slice(0, 3).map((c) => (
-                          <span
-                            key={c}
-                            className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-700"
-                          >
-                            {c}
-                          </span>
-                        ))}
-                        {item.colors.length > 3 && (
-                          <span className="text-[10px] text-gray-400">
-                            +{item.colors.length - 3}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-              </div>
-            </div>
-          );
-        })}
+        {products.map((item, index) => (
+          <ProductCard
+            key={item.id}
+            product={item}
+            innerRef={index === products.length - 1 ? lastProductRef : null}
+            onOpen={setSelectedProduct}
+          />
+        ))}
 
         {/* SKELETON */}
         {loading &&
           Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="h-60 bg-gray-200 animate-pulse rounded-xl"
-            />
+              className="animate-pulse overflow-hidden rounded-xl border border-gray-200 bg-white"
+            >
+              <div className="aspect-4/5 bg-gray-200" />
+              <div className="space-y-2 p-3.5">
+                <div className="h-3.5 w-3/4 rounded bg-gray-200" />
+                <div className="h-3 w-1/2 rounded bg-gray-200" />
+                <div className="mt-3 h-9 w-full rounded-lg bg-gray-200" />
+              </div>
+            </div>
           ))}
       </div>
       {!hasMore && !loading && products.length > 0 && (
