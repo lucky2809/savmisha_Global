@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { MdOutlinePhotoLibrary, MdClose } from "react-icons/md";
+import { MdOutlinePhotoLibrary, MdClose, MdCrop, MdInfoOutline } from "react-icons/md";
 import { uploadWithProgress } from "../../lib/api";
 import { Button, Card, CardHeader, PageHeader } from "./ui";
+import ImageEditorModal from "./ImageEditorModal";
 
 const MAX_IMAGES = 100;
 const MAX_FILE_MB = 10;
@@ -13,6 +14,7 @@ export default function BulkImageUpload() {
   const [previews, setPreviews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [editingIndex, setEditingIndex] = useState(null);
 
   const navigate = useNavigate();
 
@@ -45,6 +47,13 @@ export default function BulkImageUpload() {
 
   const removeImage = (index) =>
     setImages((prev) => prev.filter((_, i) => i !== index));
+
+  const applyEdit = (editedFile) => {
+    setImages((prev) =>
+      prev.map((file, i) => (i === editingIndex ? editedFile : file))
+    );
+    setEditingIndex(null);
+  };
 
   const handleSubmit = async () => {
     if (!images.length) {
@@ -83,13 +92,26 @@ export default function BulkImageUpload() {
     <>
       <PageHeader
         title="Bulk Upload"
-        subtitle="Each image becomes its own product. Nothing is posted to social from here."
+        subtitle="Each image becomes its own product."
         action={
           <Button variant="secondary" onClick={() => navigate("/products")}>
             View products
           </Button>
         }
       />
+
+      <div className="mb-6 flex items-start gap-3 rounded-xl border border-sky-200 bg-sky-50 px-4 py-3">
+        <MdInfoOutline className="mt-0.5 h-5 w-5 shrink-0 text-sky-600" />
+        <p className="text-sm text-sky-900">
+          Bulk uploads are <strong>not</strong> posted to Facebook or Instagram -
+          a large batch would flood your page and hit Meta's rate limits. Pick the
+          ones worth posting on{" "}
+          <Link to="/dashboard" className="font-medium underline">
+            Overview
+          </Link>{" "}
+          and hit Sync.
+        </p>
+      </div>
 
       <Card>
         <CardHeader
@@ -141,15 +163,28 @@ export default function BulkImageUpload() {
                     alt=""
                     className="h-24 w-full rounded-lg border border-zinc-200 object-cover"
                   />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(index)}
-                    aria-label="Remove image"
-                    disabled={loading}
-                    className="absolute top-1.5 right-1.5 cursor-pointer rounded bg-zinc-900/70 p-1 text-white opacity-0 transition group-hover:opacity-100 focus:opacity-100"
-                  >
-                    <MdClose className="h-3.5 w-3.5" />
-                  </button>
+                  <div className="absolute top-1.5 right-1.5 flex gap-1 opacity-0 transition group-focus-within:opacity-100 group-hover:opacity-100">
+                    <button
+                      type="button"
+                      onClick={() => setEditingIndex(index)}
+                      aria-label="Crop image"
+                      title="Crop, zoom or rotate"
+                      disabled={loading}
+                      className="cursor-pointer rounded bg-zinc-900/70 p-1 text-white transition hover:bg-zinc-900"
+                    >
+                      <MdCrop className="h-3.5 w-3.5" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      aria-label="Remove image"
+                      disabled={loading}
+                      className="cursor-pointer rounded bg-zinc-900/70 p-1 text-white transition hover:bg-red-600"
+                    >
+                      <MdClose className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -184,6 +219,14 @@ export default function BulkImageUpload() {
           </Button>
         </div>
       </Card>
+
+      {editingIndex !== null && (
+        <ImageEditorModal
+          file={images[editingIndex]}
+          onCancel={() => setEditingIndex(null)}
+          onApply={applyEdit}
+        />
+      )}
     </>
   );
 }

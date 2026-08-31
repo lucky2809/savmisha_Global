@@ -6,9 +6,14 @@ import {
   MdClose,
   MdCheckCircle,
   MdCancel,
+  MdCrop,
+  MdRemoveCircleOutline,
 } from "react-icons/md";
 import { uploadWithProgress } from "../../lib/api";
 import { Badge, Button, Card, CardHeader, PageHeader } from "./ui";
+import SocialToggles from "./SocialToggles";
+import { PLATFORMS, useSocialSync } from "../../lib/socialSync";
+import ImageEditorModal from "./ImageEditorModal";
 
 const MIN_IMAGES = 1;
 const MAX_IMAGES = 5;
@@ -22,7 +27,9 @@ export default function ImageUpload() {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState(null);
+  const [editingIndex, setEditingIndex] = useState(null);
 
+  const { sync, toggle } = useSocialSync();
   const navigate = useNavigate();
 
   // Object URLs must be revoked or every re-selection leaks a blob.
@@ -51,6 +58,13 @@ export default function ImageUpload() {
     }
 
     if (accepted.length) setImages((prev) => [...prev, ...accepted]);
+  };
+
+  const applyEdit = (editedFile) => {
+    setImages((prev) =>
+      prev.map((file, i) => (i === editingIndex ? editedFile : file))
+    );
+    setEditingIndex(null);
   };
 
   const removeImage = (index) => {
@@ -82,6 +96,8 @@ export default function ImageUpload() {
       if (i !== mainIndex) formData.append("otherImages", img);
     });
     formData.append("description", description.trim());
+    formData.append("postToFacebook", String(sync.facebook));
+    formData.append("postToInstagram", String(sync.instagram));
 
     setLoading(true);
     setProgress(0);
@@ -96,15 +112,26 @@ export default function ImageUpload() {
       setDescription("");
 
       const social = data?.social ?? data?.data?.socialStatus;
-      const fbOk = social?.facebook?.id || social?.facebook?.status === "posted";
-      const igOk = social?.instagram?.id || social?.instagram?.status === "posted";
+      const requested = PLATFORMS.filter((p) => sync[p.key]);
 
-      if (fbOk && igOk) {
-        toast.success("Product uploaded and posted to Facebook and Instagram");
-      } else if (fbOk || igOk) {
-        toast.warning("Product uploaded, but only one social post succeeded");
+      if (!requested.length) {
+        toast.success("Product saved. Sync it to social from Overview whenever you like.");
       } else {
-        toast.warning("Product uploaded, but the social posts failed");
+        const succeeded = requested.filter(
+          (p) => social?.[p.key]?.id || social?.[p.key]?.status === "posted"
+        );
+
+        if (succeeded.length === requested.length) {
+          toast.success(
+            `Product uploaded and posted to ${succeeded.map((p) => p.label).join(" and ")}`
+          );
+        } else if (succeeded.length) {
+          toast.warning(
+            `Uploaded, but only ${succeeded.map((p) => p.label).join(" and ")} succeeded`
+          );
+        } else {
+          toast.warning("Product uploaded, but the social posts failed");
+        }
       }
     } catch (err) {
       // Surface the server's actual message instead of a blanket "Upload Failed".
@@ -121,7 +148,7 @@ export default function ImageUpload() {
     <>
       <PageHeader
         title="Upload Product"
-        subtitle="The main image and description are also posted to Facebook and Instagram."
+        subtitle="Crop images before uploading, and choose where the post goes."
         action={
           <Button variant="secondary" onClick={() => navigate("/products")}>
             View products
@@ -134,7 +161,7 @@ export default function ImageUpload() {
           <Card>
             <CardHeader
               title="Images"
-              subtitle={`${images.length} of ${MAX_IMAGES} selected · click a thumbnail to set the main image`}
+              subtitle={`${images.length} of ${MAX_IMAGES} selected · click a thumbnail to set the main image, or crop it`}
             />
 
             <div className="p-5">
@@ -180,14 +207,28 @@ export default function ImageUpload() {
                         </span>
                       )}
 
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        aria-label="Remove image"
-                        className="absolute top-1.5 right-1.5 cursor-pointer rounded bg-zinc-900/70 p-1 text-white opacity-0 transition group-hover:opacity-100 focus:opacity-100"
-                      >
-                        <MdClose className="h-3.5 w-3.5" />
-                      </button>
+                      <div className="absolute top-1.5 right-1.5 flex gap-1 opacity-0 transition group-focus-within:opacity-100 group-hover:opacity-100">
+                        <button
+                          type="button"
+                          onClick={() => setEditingIndex(index)}
+                          aria-label="Crop image"
+                          title="Crop, zoom or rotate"
+                          disabled={loading}
+                          className="cursor-pointer rounded bg-zinc-900/70 p-1 text-white transition hover:bg-zinc-900"
+                        >
+                          <MdCrop className="h-3.5 w-3.5" />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          aria-label="Remove image"
+                          disabled={loading}
+                          className="cursor-pointer rounded bg-zinc-900/70 p-1 text-white transition hover:bg-red-600"
+                        >
+                          <MdClose className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -217,6 +258,16 @@ export default function ImageUpload() {
         </div>
 
         <div className="space-y-6">
+          <Card>
+            <CardHeader
+              title="Social sync"
+              subtitle="Where this product gets posted"
+            />
+            <div className="p-5">
+              <SocialToggles sync={sync} onToggle={toggle} disabled={loading} />
+            </div>
+          </Card>
+
           <Card className="lg:sticky lg:top-24">
             <CardHeader title="Publish" />
             <div className="space-y-4 p-5">
@@ -261,26 +312,36 @@ export default function ImageUpload() {
             <Card>
               <CardHeader title="Last upload result" />
               <div className="space-y-3 p-5">
-                {["facebook", "instagram"].map((platform) => {
-                  const entry = social[platform];
+                {PLATFORMS.map(({ key, label }) => {
+                  const entry = social[key];
                   const ok = entry?.id || entry?.status === "posted";
+                  const skipped = entry?.skipped || entry?.status === "skipped";
 
                   return (
-                    <div key={platform}>
+                    <div key={key}>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-zinc-800 capitalize">
-                          {platform}
+                        <span className="text-sm font-medium text-zinc-800">
+                          {label}
                         </span>
-                        <Badge tone={ok ? "success" : "danger"}>
-                          {ok ? (
-                            <MdCheckCircle className="h-3.5 w-3.5" />
-                          ) : (
-                            <MdCancel className="h-3.5 w-3.5" />
-                          )}
-                          {ok ? "Posted" : "Failed"}
-                        </Badge>
+
+                        {skipped ? (
+                          <Badge tone="neutral">
+                            <MdRemoveCircleOutline className="h-3.5 w-3.5" />
+                            Turned off
+                          </Badge>
+                        ) : (
+                          <Badge tone={ok ? "success" : "danger"}>
+                            {ok ? (
+                              <MdCheckCircle className="h-3.5 w-3.5" />
+                            ) : (
+                              <MdCancel className="h-3.5 w-3.5" />
+                            )}
+                            {ok ? "Posted" : "Failed"}
+                          </Badge>
+                        )}
                       </div>
-                      {!ok && entry?.error && (
+
+                      {!ok && !skipped && entry?.error && (
                         <p className="mt-1 text-xs break-words text-red-600">
                           {entry.error}
                         </p>
@@ -301,6 +362,14 @@ export default function ImageUpload() {
           )}
         </div>
       </div>
+
+      {editingIndex !== null && (
+        <ImageEditorModal
+          file={images[editingIndex]}
+          onCancel={() => setEditingIndex(null)}
+          onApply={applyEdit}
+        />
+      )}
     </>
   );
 }
