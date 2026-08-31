@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 // import Navbar from '../navComp/Navbar'
 import { toast, ToastContainer } from 'react-toastify'   // ✅ added
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import useUserStore from '../../store/userStore'
 
 
 const ErrorMessage = ({ error, field }) => {
@@ -13,6 +14,8 @@ const ErrorMessage = ({ error, field }) => {
 function Signup() {
 
     const navigate = useNavigate()
+    const setAuth = useUserStore((s) => s.setAuth)
+    const [submitting, setSubmitting] = useState(false)
     const fullname = useRef("")
     const phone = useRef("")
     const email = useRef("")
@@ -62,6 +65,8 @@ function Signup() {
         }
         setError({})
 
+        setSubmitting(true)
+
         try {
             const url = `${import.meta.env.VITE_API_URL}/registration-api/`
             const fetchData = await fetch(url, {
@@ -70,11 +75,39 @@ function Signup() {
                 body: JSON.stringify(object)
             })
             const response = await fetchData.json()
+
+            // The response used to be parsed and discarded, so a rejected
+            // signup still showed a success toast and redirected to login.
+            if (!fetchData.ok || response?.success === false) {
+                const message = response?.message || "Could not create your account"
+
+                if (response?.error_type === "email" || /email/i.test(message)) {
+                    setError({ email: message })
+                }
+
+                toast.error(message)
+                return
+            }
+
+            // Signing up logs you straight in - the server issues the same
+            // token the login route does.
+            if (response.token) {
+                localStorage.setItem("access_token", response.token)
+                setAuth(response.user, response.token)
+
+                toast.success(`Welcome, ${response.user?.fullname || "you are signed in"}`)
+                navigate('/')
+                return
+            }
+
+            // Older backend without the token: fall back to the login screen.
+            toast.success('Account created - please sign in')
             navigate('/login')
-            toast.success('Account Create Successfull')  // ✅ already present (now works)
         } catch (err) {
             console.log("Something Went Wrong ..! ", err)
             toast.error("Server error ❌")   // ✅ toast added
+        } finally {
+            setSubmitting(false)
         }
     }
 
@@ -137,7 +170,7 @@ function Signup() {
                                 <p>I accept the terms and conditions and I agree to the privacy policy.</p>
                             </div>
                             <div className='flex justify-center'>
-                                <button onClick={SignUpSubmitHanlder} className='text-white bg-[#f59e7b] hover:bg-[#E7B09B] px-7 text-md lg:text-lg rounded-md p-1 cursor-pointer'>
+                                <button onClick={SignUpSubmitHanlder} disabled={submitting} className='text-white bg-[#f59e7b] hover:bg-[#E7B09B] px-7 text-md lg:text-lg rounded-md p-1 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed'>
                                     Submit
                                 </button>
                             </div>
