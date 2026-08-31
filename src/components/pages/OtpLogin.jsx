@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { MdArrowBack, MdMailOutline } from "react-icons/md";
+import { MdArrowBack, MdMailOutline, MdErrorOutline } from "react-icons/md";
 import Navbar from "../navComp/Navbar";
 import { api } from "../../lib/api";
 import useUserStore from "../../store/userStore";
@@ -18,6 +18,9 @@ export default function OtpLogin() {
   const [otp, setOtp] = useState("");
   const [busy, setBusy] = useState(false);
   const [cooldown, setCooldown] = useState(0);
+  // Shown on the form itself. A toast alone is easy to miss, and this page
+  // is where the mistake was made, so the message belongs next to the field.
+  const [error, setError] = useState("");
 
   const otpRef = useRef(null);
   const navigate = useNavigate();
@@ -38,18 +41,22 @@ export default function OtpLogin() {
 
     const address = email.trim().toLowerCase();
     if (!address) {
-      toast.error("Enter your email address");
+      setError("Enter your email address");
       return;
     }
 
     setBusy(true);
+    setError("");
+
     try {
       await api.post("/login-otp/send", { email: address });
       toast.success("Code sent - check your inbox");
       setStep("otp");
       setCooldown(RESEND_SECONDS);
     } catch (err) {
-      toast.error(err.message || "Could not send the code");
+      const message = err.message || "Could not send the code";
+      setError(message);
+      toast.error(message);
     } finally {
       setBusy(false);
     }
@@ -60,11 +67,13 @@ export default function OtpLogin() {
 
     const code = otp.trim();
     if (code.length !== 6) {
-      toast.error("Enter the 6-digit code");
+      setError("Enter the 6-digit code");
       return;
     }
 
     setBusy(true);
+    setError("");
+
     try {
       const res = await api.post("/login-otp/verify", {
         email: email.trim().toLowerCase(),
@@ -79,7 +88,9 @@ export default function OtpLogin() {
       toast.success("Signed in");
       navigate("/");
     } catch (err) {
-      toast.error(err.message || "Could not verify the code");
+      const message = err.message || "Could not verify the code";
+      setError(message);
+      toast.error(message);
       setOtp("");
     } finally {
       setBusy(false);
@@ -90,7 +101,7 @@ export default function OtpLogin() {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <main className="flex items-center justify-center px-4 pt-28 pb-16 lg:pt-36">
+      <main className="flex items-center justify-center px-4 pt-28 pb-16 lg:pt-36 my-12">
         <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-lg sm:p-8">
           <div className="mb-6 text-center">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
@@ -106,6 +117,17 @@ export default function OtpLogin() {
             </p>
           </div>
 
+          {error && (
+            <div
+              role="alert"
+              aria-live="polite"
+              className="mb-4 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-3.5 py-3"
+            >
+              <MdErrorOutline className="mt-0.5 h-4.5 w-4.5 shrink-0 text-red-600" />
+              <p className="text-sm text-red-800">{error}</p>
+            </div>
+          )}
+
           {step === "email" ? (
             <form onSubmit={sendCode} className="space-y-4">
               <label className="block">
@@ -115,11 +137,18 @@ export default function OtpLogin() {
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setError("");
+                  }}
                   disabled={busy}
                   autoComplete="email"
                   placeholder="you@company.com"
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm placeholder:text-gray-400 focus:border-black focus:outline-none disabled:bg-gray-50"
+                  className={`w-full rounded-xl border px-4 py-3 text-sm placeholder:text-gray-400 focus:outline-none disabled:bg-gray-50 ${
+                    error
+                      ? "border-red-400 focus:border-red-500"
+                      : "border-gray-300 focus:border-black"
+                  }`}
                 />
               </label>
 
@@ -143,10 +172,17 @@ export default function OtpLogin() {
                   autoComplete="one-time-code"
                   maxLength={6}
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                  onChange={(e) => {
+                    setOtp(e.target.value.replace(/\D/g, ""));
+                    setError("");
+                  }}
                   disabled={busy}
                   placeholder="000000"
-                  className="w-full rounded-xl border border-gray-300 px-4 py-3 text-center text-2xl font-bold tracking-[0.4em] placeholder:text-gray-300 focus:border-black focus:outline-none disabled:bg-gray-50"
+                  className={`w-full rounded-xl border px-4 py-3 text-center text-2xl font-bold tracking-[0.4em] placeholder:text-gray-300 focus:outline-none disabled:bg-gray-50 ${
+                    error
+                      ? "border-red-400 focus:border-red-500"
+                      : "border-gray-300 focus:border-black"
+                  }`}
                 />
               </label>
 
@@ -164,6 +200,7 @@ export default function OtpLogin() {
                   onClick={() => {
                     setStep("email");
                     setOtp("");
+                    setError("");
                   }}
                   className="flex cursor-pointer items-center gap-1 text-gray-500 hover:text-gray-900"
                 >
