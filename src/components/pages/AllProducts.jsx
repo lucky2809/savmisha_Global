@@ -8,10 +8,10 @@ function AllProducts() {
   return (
     <div>
         <div><Navbar/></div>
-    <NavSpacer />
+    {/* <NavSpacer size="var(--nav-h, 6rem)" /> */}
     <div>
-        <div className=" w-full text-center p-5 lg:p-15">
-        <p className="text-2xl md:text-4xl lg:text-4xl font-semibold">All Products</p>
+        <div className=" w-full text-center p-5 lg:p-15 mt-12">
+        {/* <p className="text-2xl md:text-4xl lg:text-4xl font-semibold">All Products</p> */}
       </div>
         <div className='w-full h-full'><AllImage /></div>
     </div>

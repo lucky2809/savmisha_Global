@@ -12,7 +12,7 @@ import Footer from "../navComp/Footer";
 import useCartStore from "../../store/useCartStore";
 import useUserStore from "../../store/userStore";
 import { authApi } from "../../lib/api";
-import { MAX_ORDER_QTY, clampQty } from "../../lib/catalog";
+import { MAX_ORDER_QTY, MIN_ADDRESS_CHARS, clampQty } from "../../lib/catalog";
 
 function QuantityBox({ value, onChange, disabled }) {
   const [text, setText] = useState(String(value));
@@ -72,8 +72,18 @@ export default function Cart() {
   const [address, setAddress] = useState("");
   const [note, setNote] = useState("");
   const [placing, setPlacing] = useState(false);
+  const [addressTouched, setAddressTouched] = useState(false);
 
   const totalUnits = items.reduce((sum, i) => sum + i.quantity, 0);
+
+  // Mirrors the server rule, so the button state and the server's answer
+  // never disagree. The server revalidates regardless.
+  const addressError =
+    address.trim().length === 0
+      ? "A delivery address is required"
+      : address.trim().length < MIN_ADDRESS_CHARS
+        ? "Please give the full delivery address"
+        : "";
 
   const placeOrder = async () => {
     if (!token) {
@@ -83,6 +93,12 @@ export default function Cart() {
     }
 
     if (!items.length) return;
+
+    if (addressError) {
+      setAddressTouched(true);
+      toast.error(addressError);
+      return;
+    }
 
     setPlacing(true);
 
@@ -241,16 +257,28 @@ export default function Cart() {
 
                   <label className="mt-4 block">
                     <span className="mb-1.5 block text-sm font-semibold text-gray-800">
-                      Delivery address
+                      Delivery address <span className="text-red-600">*</span>
                     </span>
                     <textarea
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
+                      onBlur={() => setAddressTouched(true)}
                       rows={3}
+                      required
+                      aria-invalid={Boolean(addressTouched && addressError)}
                       disabled={placing}
                       placeholder="Where should this be delivered?"
-                      className="w-full resize-none rounded-lg border border-gray-300 p-2.5 text-sm placeholder:text-gray-400 focus:border-black focus:outline-none disabled:bg-gray-50"
+                      className={`w-full resize-none rounded-lg border p-2.5 text-sm placeholder:text-gray-400 focus:outline-none disabled:bg-gray-50 ${
+                        addressTouched && addressError
+                          ? "border-red-400 focus:border-red-500"
+                          : "border-gray-300 focus:border-black"
+                      }`}
                     />
+                    {addressTouched && addressError && (
+                      <span className="mt-1 block text-xs text-red-600">
+                        {addressError}
+                      </span>
+                    )}
                   </label>
 
                   <label className="mt-3 block">
@@ -269,7 +297,7 @@ export default function Cart() {
 
                   <button
                     onClick={placeOrder}
-                    disabled={placing}
+                    disabled={placing || Boolean(addressError)}
                     className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-black py-3.5 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     <MdShoppingCartCheckout className="h-5 w-5" />
@@ -277,9 +305,11 @@ export default function Cart() {
                   </button>
 
                   <p className="mt-2 text-center text-xs text-gray-500">
-                    {token
-                      ? `Confirmation will be emailed to ${user?.email ?? "you"}`
-                      : "You will be asked to sign in first"}
+                    {addressError
+                      ? "Add a delivery address to place your order"
+                      : token
+                        ? `Confirmation will be emailed to ${user?.email ?? "you"}`
+                        : "You will be asked to sign in first"}
                   </p>
                 </div>
               </div>

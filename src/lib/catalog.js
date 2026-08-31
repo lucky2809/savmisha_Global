@@ -22,6 +22,9 @@ export const STANDARD_SIZES = SIZE_OPTIONS.filter((s) => s !== FREE_SIZE);
 
 export const MAX_ORDER_QTY = 2000;
 
+// Mirrors MIN_ADDRESS_CHARS in the backend order controller.
+export const MIN_ADDRESS_CHARS = 10;
+
 export const ORDER_STATUSES = [
   "placed",
   "confirmed",
