@@ -23,6 +23,12 @@ export default function ProductFields({
       sizes.includes(size) ? sizes.filter((s) => s !== size) : [...sizes, size]
     );
 
+  const allSelected = sizes.length === SIZE_OPTIONS.length;
+
+  // One control that flips meaning: select every size, or clear the lot.
+  const toggleAllSizes = () =>
+    onSizesChange(allSelected ? [] : [...SIZE_OPTIONS]);
+
   const addColor = () => {
     const value = colorDraft.trim();
     if (!value) return;
@@ -72,9 +78,26 @@ export default function ProductFields({
         </label>
 
         <div>
-          <span className="mb-2 block text-sm font-medium text-zinc-700">
-            Available sizes
-          </span>
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <span className="text-sm font-medium text-zinc-700">
+              Available sizes
+              {sizes.length > 0 && (
+                <span className="ml-1.5 font-normal text-zinc-400">
+                  {sizes.length}/{SIZE_OPTIONS.length}
+                </span>
+              )}
+            </span>
+
+            <button
+              type="button"
+              onClick={toggleAllSizes}
+              disabled={disabled}
+              className="cursor-pointer text-xs font-medium text-zinc-500 transition hover:text-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {allSelected ? "Clear all" : "Select all"}
+            </button>
+          </div>
+
           <div className="flex flex-wrap gap-2">
             {SIZE_OPTIONS.map((size) => {
               const on = sizes.includes(size);
