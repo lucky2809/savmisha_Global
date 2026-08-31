@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import { toast } from 'react-toastify';
 import useUserStore from '../../store/userStore';
 
-function Profile({ color = "#fff" }) {
+function Profile() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -28,6 +28,11 @@ const handleLogout = () => {
 
   const goToProfile = () => {
     navigate('/dashboard');
+    setIsOpen(false);
+  };
+
+  const go = (path) => () => {
+    navigate(path);
     setIsOpen(false);
   };
 
@@ -94,6 +99,20 @@ const handleLogout = () => {
                     Dashboard
                   </button>
                 )}
+
+                <button
+                  onClick={go('/orders')}
+                  className="block w-full text-center px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                >
+                  My Orders
+                </button>
+
+                <button
+                  onClick={go('/cart')}
+                  className="block w-full border-b px-4 py-2 text-center text-sm hover:bg-gray-100 cursor-pointer"
+                >
+                  Cart
+                </button>
 
                 <button
                   onClick={handleLogout}

@@ -4,9 +4,12 @@ import { FaWhatsapp } from 'react-icons/fa'
 import { Link, useLocation } from 'react-router-dom'
 import Profile from '../pages/Profile'
 import NotificationBell from './NotificationBell'
+import useUserStore from '../../store/userStore'
 import CartButton from './CartButton'
 
 function Navbar() {
+  // Orders only mean anything to a signed-in customer.
+  const token = useUserStore((s) => s.token)
   const [show, setShow] = useState(true)
   const [open, setOpen] = useState(false)
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -119,6 +122,18 @@ function Navbar() {
                   ABOUT US
                 </Link>
               </li>
+
+              {token && (
+                <li className='cursor-pointer transition'>
+                  <Link
+                    to="/orders"
+                    className={`pb-1 transition hover:text-gray-500
+                  ${isActive('/orders') ? 'border-b-2 border-black' : 'border-b-2 border-transparent'}`}
+                  >
+                    MY ORDERS
+                  </Link>
+                </li>
+              )}
 
               <li className='flex items-center gap-1'>
                 <NotificationBell />
@@ -233,6 +248,29 @@ function Navbar() {
               ABOUT US
             </Link>
           </li>
+
+          {token && (
+            <>
+              <li>
+                <Link
+                  to="/orders"
+                  onClick={() => setOpen(false)}
+                  className={`${isActive('/orders') ? 'border-b-2 border-black' : ''}`}
+                >
+                  MY ORDERS
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/cart"
+                  onClick={() => setOpen(false)}
+                  className={`${isActive('/cart') ? 'border-b-2 border-black' : ''}`}
+                >
+                  CART
+                </Link>
+              </li>
+            </>
+          )}
           <div className='w-full flex justify-center gap-8 items-center pt-10'>
             <div><a
               href="https://www.instagram.com/"
