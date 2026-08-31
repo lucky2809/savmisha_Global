@@ -10,6 +10,7 @@ import PublicRoute from './components/Auth/PublicRoute'
 import ImageUpload from './components/Admin/ImageUpload'
 import ProtectedRoute from './components/Auth/ProtectedRoute'
 import DashboardRoot from './components/Admin/DashboardRoot'
+import DashboardHome from './components/Admin/DashboardHome'
 import AllUser from './components/Admin/AllUser'
 import About from './components/pages/About'
 import Contact from './components/pages/Contact'
@@ -65,6 +66,7 @@ function App() {
               //  </ProtectedRoute>
             } /> */}
             <Route path="/dashboard" element={<ProtectedRoute><DashboardRoot /></ProtectedRoute>}>
+              <Route index element={<DashboardHome />} />        {/* Overview */}
               <Route path="upload" element={<ImageUpload />} />   {/* Image Upload */}
               <Route path="users" element={<AllUser />} />       {/* All Users */}
               <Route path="bulkImagepload" element={<BulkImageUpload />} />       {/* Bulk Image Upload */}

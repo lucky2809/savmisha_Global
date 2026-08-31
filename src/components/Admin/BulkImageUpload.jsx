@@ -1,158 +1,189 @@
-
-import React, { useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { MdOutlinePhotoLibrary, MdClose } from "react-icons/md";
+import { uploadWithProgress } from "../../lib/api";
+import { Button, Card, CardHeader, PageHeader } from "./ui";
 
-const BulkImageUpload = () => {
-    const [images, setImages] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate()
+const MAX_IMAGES = 100;
+const MAX_FILE_MB = 10;
 
+export default function BulkImageUpload() {
+  const [images, setImages] = useState([]);
+  const [previews, setPreviews] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
-    const API_URL = `${import.meta.env.VITE_API_URL}/images/bulk-upload`;
+  const navigate = useNavigate();
 
-    /* ========================
-       Select Images
-    ======================== */
+  useEffect(() => {
+    const urls = images.map((file) => URL.createObjectURL(file));
+    setPreviews(urls);
+    return () => urls.forEach((url) => URL.revokeObjectURL(url));
+  }, [images]);
 
-    const handleImages = (e) => {
-        const files = Array.from(e.target.files);
+  const addFiles = (event) => {
+    const picked = Array.from(event.target.files ?? []);
+    event.target.value = "";
 
-        const combined = [...images, ...files];
-
-        if (combined.length > 100) {
-            toast.error("Maximum 100 images allowed");
-            return;
-        }
-
-        setImages(combined);
-    };
-
-    /* ========================
-       Remove Image
-    ======================== */
-
-    const removeImage = (index) => {
-        const updated = images.filter((_, i) => i !== index);
-        setImages(updated);
-    };
-
-    /* ========================
-       Upload Images
-    ======================== */
-
- const handleSubmit = async () => {
-  if (!images.length) {
-    toast.error("Please select images");
-    return;
-  }
-
-  const formData = new FormData();
-
-  images.forEach((img) => {
-    formData.append("mainImages", img);
-  });
-
-  try {
-    setLoading(true);
-
-    const response = await fetch(API_URL, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error("Upload failed");
+    const oversize = picked.filter((f) => f.size > MAX_FILE_MB * 1024 * 1024);
+    if (oversize.length) {
+      toast.error(`${oversize.length} file(s) over ${MAX_FILE_MB}MB were skipped`);
     }
 
-    toast.success("Bulk Images Uploaded Successfully");
-    navigate("/products");
-    setImages([]);
-  } catch (error) {
-    console.error(error);
-    toast.error("Upload Failed");
-  } finally {
-    setLoading(false);
-  }
-};
-
-    return (
-        <div className="bg-gray-100 flex justify-center items-center px-2 md:p-4 lg:p-4">
-            <div className="bg-white w-full rounded-2xl shadow-xl px-3 p-6">
-
-                <h2 className="text-2xl font-bold mb-6 text-center">
-                    Bulk Image Upload
-                </h2>
-
-                {/* UPLOAD BOX */}
-
-                <div className="border-2 border-dashed border-gray-400 rounded-xl p-4 flex flex-col gap-2 text-center items-center mb-4">
-
-                    <p className="font-semibold mb-2">
-                        Upload Main Product Images
-                    </p>
-
-                    <p className="text-sm text-gray-500 mb-4">
-                        Upload multiple images (Max 100)
-                    </p>
-                    <div className="border w-fit p-2 border-orange-700">
-                        <input
-                            type="file"
-                            multiple
-                            accept="image/*"
-                            onChange={handleImages}
-                            className=" lg:ml-25 w-full cursor-pointer text-orange-700"
-                        />
-                    </div>
-
-                    <p className="mt-3 text-sm">
-                        Selected: {images.length}
-                    </p>
-
-                </div>
-
-                {/* PREVIEW GRID */}
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 mb-6">
-
-                    {images.map((img, index) => (
-
-                        <div key={index} className="relative group">
-
-                            <img
-                                src={URL.createObjectURL(img)}
-                                alt=""
-                                className="h-28 w-full object-cover rounded-lg border"
-                            />
-
-                            <button
-                                onClick={() => removeImage(index)}
-                                className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition"
-                            >
-                                ✕
-                            </button>
-
-                        </div>
-
-                    ))}
-
-                </div>
-
-                {/* UPLOAD BUTTON */}
-
-                <button
-                    onClick={handleSubmit}
-                    disabled={loading}
-                    className="w-full bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition disabled:opacity-50 cursor-pointer"
-                >
-                    {loading ? "Uploading..." : "Upload All Images"}
-                </button>
-
-            </div>
-        </div>
+    const accepted = picked.filter(
+      (f) => f.type.startsWith("image/") && f.size <= MAX_FILE_MB * 1024 * 1024
     );
-};
 
-export default BulkImageUpload;
+    if (images.length + accepted.length > MAX_IMAGES) {
+      toast.error(`Maximum ${MAX_IMAGES} images allowed`);
+      return;
+    }
 
+    if (accepted.length) setImages((prev) => [...prev, ...accepted]);
+  };
+
+  const removeImage = (index) =>
+    setImages((prev) => prev.filter((_, i) => i !== index));
+
+  const handleSubmit = async () => {
+    if (!images.length) {
+      toast.error("Select at least one image");
+      return;
+    }
+
+    const formData = new FormData();
+    images.forEach((img) => formData.append("mainImages", img));
+
+    setLoading(true);
+    setProgress(0);
+
+    try {
+      await uploadWithProgress("/images/bulk-upload", formData, setProgress);
+
+      toast.success(
+        `${images.length} image${images.length === 1 ? "" : "s"} uploaded`
+      );
+      setImages([]);
+      navigate("/products");
+    } catch (err) {
+      toast.error(err.message || "Upload failed");
+    } finally {
+      setLoading(false);
+      setProgress(0);
+    }
+  };
+
+  const totalMb = (
+    images.reduce((sum, f) => sum + f.size, 0) /
+    (1024 * 1024)
+  ).toFixed(1);
+
+  return (
+    <>
+      <PageHeader
+        title="Bulk Upload"
+        subtitle="Each image becomes its own product. Nothing is posted to social from here."
+        action={
+          <Button variant="secondary" onClick={() => navigate("/products")}>
+            View products
+          </Button>
+        }
+      />
+
+      <Card>
+        <CardHeader
+          title="Images"
+          subtitle={
+            images.length
+              ? `${images.length} of ${MAX_IMAGES} selected · ${totalMb} MB total`
+              : `Up to ${MAX_IMAGES} images, ${MAX_FILE_MB}MB each`
+          }
+          action={
+            images.length > 0 && (
+              <Button
+                variant="ghost"
+                onClick={() => setImages([])}
+                disabled={loading}
+                className="px-3 py-1.5 text-xs"
+              >
+                Clear all
+              </Button>
+            )
+          }
+        />
+
+        <div className="p-5">
+          <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-zinc-300 bg-zinc-50 px-6 py-10 text-center transition hover:border-zinc-400 hover:bg-zinc-100">
+            <MdOutlinePhotoLibrary className="h-9 w-9 text-zinc-400" />
+            <span className="mt-3 text-sm font-medium text-zinc-700">
+              Click to select images
+            </span>
+            <span className="mt-1 text-xs text-zinc-500">
+              You can add more in several goes
+            </span>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={addFiles}
+              disabled={loading}
+              className="hidden"
+            />
+          </label>
+
+          {previews.length > 0 && (
+            <div className="mt-5 grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
+              {previews.map((url, index) => (
+                <div key={url} className="group relative">
+                  <img
+                    src={url}
+                    alt=""
+                    className="h-24 w-full rounded-lg border border-zinc-200 object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    aria-label="Remove image"
+                    disabled={loading}
+                    className="absolute top-1.5 right-1.5 cursor-pointer rounded bg-zinc-900/70 p-1 text-white opacity-0 transition group-hover:opacity-100 focus:opacity-100"
+                  >
+                    <MdClose className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-3 border-t border-zinc-100 px-5 py-4">
+          {loading && (
+            <div>
+              <div className="mb-1.5 flex justify-between text-xs text-zinc-600">
+                <span>{progress < 100 ? "Uploading" : "Processing on the server"}</span>
+                <span className="tabular-nums">{progress}%</span>
+              </div>
+              <div className="h-1.5 overflow-hidden rounded-full bg-zinc-200">
+                <div
+                  className="h-full rounded-full bg-zinc-900 transition-[width] duration-200"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          <Button
+            onClick={handleSubmit}
+            loading={loading}
+            disabled={images.length === 0}
+            className="w-full sm:w-auto sm:self-end"
+          >
+            {loading
+              ? "Uploading..."
+              : `Upload ${images.length || ""} image${images.length === 1 ? "" : "s"}`}
+          </Button>
+        </div>
+      </Card>
+    </>
+  );
+}

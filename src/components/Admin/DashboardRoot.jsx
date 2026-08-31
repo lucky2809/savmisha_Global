@@ -1,248 +1,238 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
-    AppBar,
-    Box,
-    CssBaseline,
-    Divider,
-    Drawer,
-    IconButton,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Toolbar,
-    Tooltip,
-    Typography,
-} from "@mui/material";
+  MdOutlineDashboard,
+  MdOutlineCloudUpload,
+  MdOutlinePhotoLibrary,
+  MdOutlinePeopleAlt,
+  MdMenu,
+  MdClose,
+  MdChevronLeft,
+  MdChevronRight,
+  MdLogout,
+  MdOpenInNew,
+} from "react-icons/md";
+import useUserStore from "../../store/userStore";
 
-import {
-    Menu as MenuIcon,
-    Dashboard as DashboardIcon,
-    Chat as ChatIcon,
-    BarChart as BarChartIcon,
-    Settings as SettingsIcon,
-    ChevronLeft as ChevronLeftIcon,
-    ChevronRight as ChevronRightIcon,
-    Image as ImageIcon,          // ✅ NEW
-    People as PeopleIcon,        // ✅ NEW
-    Image as ImageData
-} from "@mui/icons-material";
+const NAV_ITEMS = [
+  { label: "Overview", to: "/dashboard", icon: MdOutlineDashboard, end: true },
+  { label: "Upload Product", to: "/dashboard/upload", icon: MdOutlineCloudUpload },
+  { label: "Bulk Upload", to: "/dashboard/bulkImagepload", icon: MdOutlinePhotoLibrary },
+  { label: "Users", to: "/dashboard/users", icon: MdOutlinePeopleAlt },
+];
 
-import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
-import BackButton from "../pages/BackButton";
+const COLLAPSE_KEY = "dashboard:sidebar-collapsed";
 
-const drawerWidth = 240;
-const collapsedWidth = 80;
+function NavItems({ collapsed, onNavigate }) {
+  return (
+    <nav className="flex flex-col gap-1 px-3">
+      {NAV_ITEMS.map((item) => {
+        const Icon = item.icon;
+
+        return (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={item.end}
+            onClick={onNavigate}
+            title={collapsed ? item.label : undefined}
+            className={({ isActive }) =>
+              `group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition
+               ${collapsed ? "justify-center" : ""}
+               ${
+                 isActive
+                   ? "bg-white/10 text-white"
+                   : "text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
+               }`
+            }
+          >
+            <Icon className="h-5 w-5 shrink-0" />
+            {!collapsed && <span className="truncate">{item.label}</span>}
+          </NavLink>
+        );
+      })}
+    </nav>
+  );
+}
+
+function SidebarBody({ collapsed, setCollapsed, showCollapseToggle, onNavigate }) {
+  const navigate = useNavigate();
+
+  return (
+    <div className="flex h-full flex-col bg-zinc-950">
+      <div
+        className={`flex h-16 items-center gap-2 border-b border-white/10 px-4 ${
+          collapsed ? "justify-center" : "justify-between"
+        }`}
+      >
+        {!collapsed && (
+          <button
+            onClick={() => navigate("/")}
+            className="cursor-pointer truncate text-base font-semibold tracking-tight text-white"
+          >
+            Savmisha<span className="text-amber-500">Global</span>
+          </button>
+        )}
+
+        {showCollapseToggle && (
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className="cursor-pointer rounded-md p-1.5 text-zinc-400 transition hover:bg-white/10 hover:text-white"
+          >
+            {collapsed ? (
+              <MdChevronRight className="h-5 w-5" />
+            ) : (
+              <MdChevronLeft className="h-5 w-5" />
+            )}
+          </button>
+        )}
+      </div>
+
+      <div className="flex-1 overflow-y-auto py-4">
+        <NavItems collapsed={collapsed} onNavigate={onNavigate} />
+      </div>
+
+      <div className="border-t border-white/10 p-3">
+        <button
+          onClick={() => navigate("/")}
+          title={collapsed ? "View store" : undefined}
+          className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100 ${
+            collapsed ? "justify-center" : ""
+          }`}
+        >
+          <MdOpenInNew className="h-5 w-5 shrink-0" />
+          {!collapsed && <span>View store</span>}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function DashboardRoot() {
-    const [mobileOpen, setMobileOpen] = React.useState(false);
-    const [isCollapsed, setIsCollapsed] = React.useState(false);
-    const location = useLocation();
-    const navigate = useNavigate()
-
-    const handlelogo = () => {
-        navigate('/')
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem(COLLAPSE_KEY) === "1";
+    } catch {
+      return false;
     }
+  });
 
-    const currentDrawerWidth = isCollapsed
-        ? collapsedWidth
-        : drawerWidth;
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useUserStore();
 
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
+  useEffect(() => {
+    try {
+      localStorage.setItem(COLLAPSE_KEY, collapsed ? "1" : "0");
+    } catch {
+      // private mode / storage disabled - collapsing just won't persist
+    }
+  }, [collapsed]);
 
-    // ✅ UPDATED MENU
-    const menuItems = [
-        // { text: "Overview", path: "/dashboard", icon: <DashboardIcon /> },
-        { text: "Image Upload", path: "/dashboard/upload", icon: <ImageIcon /> }, // ✅
-        { text: "All Users", path: "/dashboard/users", icon: <PeopleIcon /> },   // ✅
-        { text: "BulkImage Upload", path: "/dashboard/bulkImagepload", icon: <ImageData /> },   // ✅
-        // { text: "Analytics", path: "/dashboard/analytics", icon: <BarChartIcon /> },
-        // { text: "Widget Settings", path: "/dashboard/widget", icon: <ChatIcon /> },
-        // { text: "Settings", path: "/dashboard/settings", icon: <SettingsIcon /> },
-    ];
+  const currentTitle =
+    NAV_ITEMS.find((i) =>
+      i.end ? location.pathname === i.to : location.pathname.startsWith(i.to)
+    )?.label ?? "Dashboard";
 
-    const drawerContent = (
-        <Box
-            sx={{
-                backgroundColor: "#0c0c0c",
-                height: "100%",
-                color: "#fff",
-            }}
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  return (
+    <div className="min-h-screen bg-zinc-50">
+      {/* Desktop sidebar */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-30 hidden transition-[width] duration-300 lg:block ${
+          collapsed ? "w-20" : "w-64"
+        }`}
+      >
+        <SidebarBody
+          collapsed={collapsed}
+          setCollapsed={setCollapsed}
+          showCollapseToggle
+        />
+      </aside>
+
+      {/* Mobile drawer */}
+      <div
+        className={`fixed inset-0 z-40 lg:hidden ${
+          mobileOpen ? "" : "pointer-events-none"
+        }`}
+      >
+        <div
+          onClick={() => setMobileOpen(false)}
+          className={`absolute inset-0 bg-zinc-900/60 transition-opacity duration-300 ${
+            mobileOpen ? "opacity-100" : "opacity-0"
+          }`}
+        />
+        <div
+          className={`absolute inset-y-0 left-0 w-64 shadow-xl transition-transform duration-300 ${
+            mobileOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
         >
-            <Toolbar
-                sx={{
-                    display: "flex",
-                    justifyContent: isCollapsed ? "center" : "space-between",
-                    px: 2,
-                }}
-            >
-                {!isCollapsed && (
-                    <Typography  variant="h6" fontWeight="bold">
-                        <button onClick={handlelogo} className="cursor-pointer pr-4">SavmishaGlobal</button>
-                    </Typography>
+          <button
+            onClick={() => setMobileOpen(false)}
+            aria-label="Close menu"
+            className="absolute top-4 -right-11 cursor-pointer rounded-md bg-zinc-900/80 p-2 text-white"
+          >
+            <MdClose className="h-5 w-5" />
+          </button>
+          <SidebarBody
+            collapsed={false}
+            setCollapsed={() => {}}
+            onNavigate={() => setMobileOpen(false)}
+          />
+        </div>
+      </div>
+
+      {/* Content column */}
+      <div
+        className={`flex min-h-screen flex-col transition-[padding] duration-300 ${
+          collapsed ? "lg:pl-20" : "lg:pl-64"
+        }`}
+      >
+        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-zinc-200 bg-white/90 px-4 backdrop-blur sm:px-6">
+          <button
+            onClick={() => setMobileOpen(true)}
+            aria-label="Open menu"
+            className="cursor-pointer rounded-md p-2 text-zinc-600 transition hover:bg-zinc-100 lg:hidden"
+          >
+            <MdMenu className="h-5 w-5" />
+          </button>
+
+          <h1 className="truncate text-base font-semibold text-zinc-900">
+            {currentTitle}
+          </h1>
+
+          <div className="ml-auto flex items-center gap-3">
+            {user && (
+              <div className="hidden text-right sm:block">
+                <p className="text-sm leading-tight font-medium text-zinc-900">
+                  {user.fullname || user.email}
+                </p>
+                {user.role && (
+                  <p className="text-xs text-zinc-500 capitalize">{user.role}</p>
                 )}
+              </div>
+            )}
 
-                <IconButton
-                    onClick={() => setIsCollapsed(!isCollapsed)}
-                    sx={{ color: "#fff" }}
-                >
-                    {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                </IconButton>
-            </Toolbar>
-
-            <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
-
-            <List sx={{ px: 1 }}>
-                {menuItems.map((item) => {
-                    const isActive =
-                        location.pathname === item.path ||
-                        location.pathname.startsWith(item.path + "/");
-
-                    return (
-                        <ListItem key={item.text} disablePadding>
-                            <Tooltip
-                                title={isCollapsed ? item.text : ""}
-                                placement="right"
-                                arrow
-                            >
-                                <ListItemButton
-                                    component={NavLink}
-                                    to={item.path}
-                                    end={item.path === "/dashboard"}
-                                    style={() => ({
-                                        backgroundColor: isActive
-                                            ? "rgb(185 192 192 / 31%)"
-                                            : "transparent",
-                                        borderRadius: "8px",
-                                    })}
-                                    sx={{
-                                        justifyContent: isCollapsed ? "center" : "flex-start",
-                                        px: 2,
-                                        transition: "all 0.3s ease",
-                                        "&:hover": { backgroundColor: "#1f2937" },
-                                    }}
-                                >
-                                    <ListItemIcon
-                                        sx={{
-                                            color: "#fff",
-                                            minWidth: 0,
-                                            mr: isCollapsed ? 0 : 2,
-                                            justifyContent: "center",
-                                        }}
-                                    >
-                                        {item.icon}
-                                    </ListItemIcon>
-
-                                    {!isCollapsed && (
-                                        <ListItemText
-                                            primaryTypographyProps={{
-                                                fontSize: "14px",
-                                            }}
-                                            primary={item.text}
-                                        />
-                                    )}
-                                </ListItemButton>
-                            </Tooltip>
-                        </ListItem>
-                    );
-                })}
-            </List>
-        </Box>
-    );
-
-    return (
-        <Box sx={{ display: "flex" }}>
-            <CssBaseline />
-
-            {/* Top AppBar */}
-            <AppBar
-                position="fixed"
-                sx={{
-                    backgroundColor: "#0c0c0c",
-                    width: { sm: `calc(100% - ${currentDrawerWidth}px)` },
-                    ml: { sm: `${currentDrawerWidth}px` },
-                    transition: "all 0.3s ease",
-                }}
+            <button
+              onClick={handleLogout}
+              className="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
             >
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        sx={{ mr: 2, display: { sm: "none" } }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                <div className="w-full flex items-center justify-between">
-                    <Typography variant="h6" noWrap>
-                        Dashboard
-                    </Typography>
-                    <BackButton />
-                    </div>
-                </Toolbar>
-            </AppBar>
+              <MdLogout className="h-4 w-4" />
+              <span className="hidden sm:inline">Log out</span>
+            </button>
+          </div>
+        </header>
 
-            {/* Sidebar */}
-            <Box
-                component="nav"
-                sx={{ width: { sm: currentDrawerWidth }, flexShrink: { sm: 0 } }}
-            >
-                {/* Mobile Drawer */}
-                <Drawer
-                    variant="temporary"
-                    open={mobileOpen}
-                    onClose={handleDrawerToggle}
-                    ModalProps={{ keepMounted: true }}
-                    sx={{
-                        display: { xs: "block", sm: "none" },
-                        "& .MuiDrawer-paper": {
-                            width: drawerWidth,
-                            backgroundColor: "#111827",
-                        },
-                    }}
-                >
-                    {drawerContent}
-                </Drawer>
-
-                {/* Desktop Drawer */}
-                <Drawer
-                    variant="permanent"
-                    open
-                    sx={{
-                        display: { xs: "none", sm: "block" },
-                        "& .MuiDrawer-paper": {
-                            width: currentDrawerWidth,
-                            transition: "width 0.3s ease",
-                            boxSizing: "border-box",
-                            backgroundColor: "#111827",
-                            borderRight: "1px solid rgba(255,255,255,0.05)",
-                            overflowX: "hidden",
-                        },
-                    }}
-                >
-                    {drawerContent}
-                </Drawer>
-            </Box>
-
-            {/* Main Content */}
-            <Box
-                component="main"
-                sx={{
-                    flexGrow: 1,
-                    p: 3,
-                    width: { sm: `calc(100% - ${currentDrawerWidth}px)` },
-                    backgroundColor: "#f8fafc",
-                    minHeight: "100vh",
-                    transition: "all 0.3s ease",
-                    padding: 0
-                }}
-            >
-                <Toolbar />
-                <Outlet />   {/* ✅ यही dashboard ke अंदर pages दिखाता है */}
-            </Box>
-        </Box>
-    );
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
 }

@@ -1,189 +1,306 @@
-import React, { useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import {
+  MdOutlineCloudUpload,
+  MdClose,
+  MdCheckCircle,
+  MdCancel,
+} from "react-icons/md";
+import { uploadWithProgress } from "../../lib/api";
+import { Badge, Button, Card, CardHeader, PageHeader } from "./ui";
 
-const ImageUpload = () => {
+const MIN_IMAGES = 1;
+const MAX_IMAGES = 5;
+const MAX_FILE_MB = 10;
+
+export default function ImageUpload() {
   const [images, setImages] = useState([]);
+  const [previews, setPreviews] = useState([]);
   const [mainIndex, setMainIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
-
-  // ✅ NEW STATE
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [result, setResult] = useState(null);
 
   const navigate = useNavigate();
 
-  const API_URL = `${import.meta.env.VITE_API_URL}/images/upload`;
+  // Object URLs must be revoked or every re-selection leaks a blob.
+  useEffect(() => {
+    const urls = images.map((file) => URL.createObjectURL(file));
+    setPreviews(urls);
+    return () => urls.forEach((url) => URL.revokeObjectURL(url));
+  }, [images]);
 
-  const handleImages = (e) => {
-    const files = Array.from(e.target.files);
+  const addFiles = (event) => {
+    const picked = Array.from(event.target.files ?? []);
+    event.target.value = ""; // allow re-picking the same file after a remove
 
-    const combined = [...images, ...files];
+    const tooBig = picked.filter((f) => f.size > MAX_FILE_MB * 1024 * 1024);
+    if (tooBig.length) {
+      toast.error(`${tooBig.length} file(s) exceed ${MAX_FILE_MB}MB and were skipped`);
+    }
 
-    if (combined.length > 5) {
-      alert("Maximum 5 images allowed ❌");
+    const accepted = picked.filter(
+      (f) => f.type.startsWith("image/") && f.size <= MAX_FILE_MB * 1024 * 1024
+    );
+
+    if (images.length + accepted.length > MAX_IMAGES) {
+      toast.error(`Maximum ${MAX_IMAGES} images allowed`);
       return;
     }
 
-    setImages(combined);
-
-    if (combined.length === files.length) {
-      setMainIndex(0);
-    }
+    if (accepted.length) setImages((prev) => [...prev, ...accepted]);
   };
 
   const removeImage = (index) => {
-    const newImages = images.filter((_, i) => i !== index);
-    setImages(newImages);
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setMainIndex((prev) => {
+      if (index === prev) return 0;
+      return index < prev ? prev - 1 : prev;
+    });
+  };
 
-    if (mainIndex === index) {
+  // The old version let this run on an empty array, which posted the literal
+  // string "undefined" as mainImage and came back as a confusing 400.
+  const validationError =
+    images.length < MIN_IMAGES
+      ? `Select at least ${MIN_IMAGES} image`
+      : !description.trim()
+        ? "Add a description - it becomes the social media caption"
+        : "";
+
+  const handleSubmit = async () => {
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("mainImage", images[mainIndex]);
+    images.forEach((img, i) => {
+      if (i !== mainIndex) formData.append("otherImages", img);
+    });
+    formData.append("description", description.trim());
+
+    setLoading(true);
+    setProgress(0);
+    setResult(null);
+
+    try {
+      const data = await uploadWithProgress("/images/upload", formData, setProgress);
+
+      setResult(data);
+      setImages([]);
       setMainIndex(0);
-    } else if (mainIndex > index) {
-      setMainIndex((prev) => prev - 1);
+      setDescription("");
+
+      const social = data?.social ?? data?.data?.socialStatus;
+      const fbOk = social?.facebook?.id || social?.facebook?.status === "posted";
+      const igOk = social?.instagram?.id || social?.instagram?.status === "posted";
+
+      if (fbOk && igOk) {
+        toast.success("Product uploaded and posted to Facebook and Instagram");
+      } else if (fbOk || igOk) {
+        toast.warning("Product uploaded, but only one social post succeeded");
+      } else {
+        toast.warning("Product uploaded, but the social posts failed");
+      }
+    } catch (err) {
+      // Surface the server's actual message instead of a blanket "Upload Failed".
+      toast.error(err.message || "Upload failed");
+    } finally {
+      setLoading(false);
+      setProgress(0);
     }
   };
 
-const handleSubmit = async () => {
-  const formData = new FormData();
-
-  // main image
-  formData.append("mainImage", images[mainIndex]);
-
-  // other images
-  images.forEach((img, i) => {
-    if (i !== mainIndex) {
-      formData.append("otherImages", img);
-    }
-  });
-
-  // description
-  formData.append("description", description);
-
-  try {
-    setLoading(true);
-
-    const response = await fetch(API_URL, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error("Upload failed");
-    }
-
-    toast.success("Product Uploaded Successfully");
-
-    // reset
-    setImages([]);
-    setMainIndex(0);
-    setDescription("");
-
-    navigate("/products");
-  } catch (err) {
-    console.error(err);
-    toast.error("Upload Failed");
-  } finally {
-    setLoading(false);
-  }
-};
-  
+  const social = result?.social ?? result?.data?.socialStatus;
 
   return (
-    <div className="bg-gray-100 flex justify-center items-center px-4 py-6">
-      <div className="bg-white w-full rounded-2xl shadow-xl p-2 lg:p-6">
+    <>
+      <PageHeader
+        title="Upload Product"
+        subtitle="The main image and description are also posted to Facebook and Instagram."
+        action={
+          <Button variant="secondary" onClick={() => navigate("/products")}>
+            View products
+          </Button>
+        }
+      />
 
-        <h2 className="text-xl lg:text-2xl font-bold mb-6 text-center">
-          Product Image Upload
-        </h2>
-
-        {/* IMAGE UPLOAD */}
-        <div className="border-2 border-dashed border-gray-400 rounded-xl p-6 flex flex-col gap-2 text-center items-center mb-4">
-          <p className="font-semibold">Upload Product Images</p>
-          <p className="text-sm text-gray-500">Minimum 4 images required</p>
-
-          <div className="border w-fit p-2 border-orange-700">
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImages}
-              className="lg:ml-25 w-full cursor-pointer text-orange-700"
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="space-y-6 lg:col-span-2">
+          <Card>
+            <CardHeader
+              title="Images"
+              subtitle={`${images.length} of ${MAX_IMAGES} selected · click a thumbnail to set the main image`}
             />
-          </div>
 
-          <p className="mt-2 text-sm">
-            Selected: {images.length}/4{" "}
-            {images.length >= 4 ? "✅" : "❌"}
-          </p>
+            <div className="p-5">
+              <label
+                className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-zinc-300 bg-zinc-50 px-6 py-10 text-center transition hover:border-zinc-400 hover:bg-zinc-100"
+              >
+                <MdOutlineCloudUpload className="h-9 w-9 text-zinc-400" />
+                <span className="mt-3 text-sm font-medium text-zinc-700">
+                  Click to select images
+                </span>
+                <span className="mt-1 text-xs text-zinc-500">
+                  JPG or PNG · up to {MAX_FILE_MB}MB each · max {MAX_IMAGES} images
+                </span>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={addFiles}
+                  disabled={loading}
+                  className="hidden"
+                />
+              </label>
+
+              {previews.length > 0 && (
+                <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+                  {previews.map((url, index) => (
+                    <div key={url} className="group relative">
+                      <button
+                        type="button"
+                        onClick={() => setMainIndex(index)}
+                        className={`block w-full cursor-pointer overflow-hidden rounded-lg border-2 transition ${
+                          mainIndex === index
+                            ? "border-emerald-500 ring-2 ring-emerald-100"
+                            : "border-zinc-200 hover:border-zinc-400"
+                        }`}
+                      >
+                        <img src={url} alt="" className="h-28 w-full object-cover" />
+                      </button>
+
+                      {mainIndex === index && (
+                        <span className="absolute top-1.5 left-1.5 rounded bg-emerald-500 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                          MAIN
+                        </span>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        aria-label="Remove image"
+                        className="absolute top-1.5 right-1.5 cursor-pointer rounded bg-zinc-900/70 p-1 text-white opacity-0 transition group-hover:opacity-100 focus:opacity-100"
+                      >
+                        <MdClose className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </Card>
+
+          <Card>
+            <CardHeader
+              title="Description"
+              subtitle="Used as the caption on Facebook and Instagram."
+            />
+            <div className="p-5">
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={5}
+                disabled={loading}
+                placeholder="Describe the product..."
+                className="w-full resize-none rounded-lg border border-zinc-300 p-3 text-sm text-zinc-900 transition placeholder:text-zinc-400 focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10 focus:outline-none disabled:bg-zinc-50"
+              />
+              <p className="mt-1.5 text-xs text-zinc-500">
+                {description.trim().length} characters
+              </p>
+            </div>
+          </Card>
         </div>
 
-        <p className="text-sm text-gray-600 mb-4">
-          👉 Click any image to set as <b>Main Image</b>
-        </p>
-
-        {/* PREVIEW GRID */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-6">
-          {images.map((img, index) => (
-            <div key={index} className="relative group cursor-pointer">
-              <img
-                src={URL.createObjectURL(img)}
-                alt=""
-                className={`h-32 w-full object-cover rounded-lg border-2 ${
-                  mainIndex === index
-                    ? "border-green-500"
-                    : "border-gray-300"
-                }`}
-                onClick={() => setMainIndex(index)}
-              />
-
-              {mainIndex === index && (
-                <span className="absolute top-1 left-1 bg-green-500 text-white text-xs px-2 py-1 rounded">
-                  MAIN
-                </span>
+        <div className="space-y-6">
+          <Card className="lg:sticky lg:top-24">
+            <CardHeader title="Publish" />
+            <div className="space-y-4 p-5">
+              {validationError && !loading && (
+                <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800 ring-1 ring-amber-200 ring-inset">
+                  {validationError}
+                </p>
               )}
 
-              <button
-                type="button"
-                onClick={() => removeImage(index)}
-                className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition"
+              {loading && (
+                <div>
+                  <div className="mb-1.5 flex justify-between text-xs text-zinc-600">
+                    <span>{progress < 100 ? "Uploading" : "Processing & posting"}</span>
+                    <span className="tabular-nums">{progress}%</span>
+                  </div>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-zinc-200">
+                    <div
+                      className="h-full rounded-full bg-zinc-900 transition-[width] duration-200"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                  {progress === 100 && (
+                    <p className="mt-2 text-xs text-zinc-500">
+                      Optimising images and posting to social - this can take a while.
+                    </p>
+                  )}
+                </div>
+              )}
+
+              <Button
+                onClick={handleSubmit}
+                loading={loading}
+                disabled={Boolean(validationError)}
+                className="w-full"
               >
-                ✕
-              </button>
+                {loading ? "Uploading..." : "Upload product"}
+              </Button>
             </div>
-          ))}
+          </Card>
+
+          {social && (
+            <Card>
+              <CardHeader title="Last upload result" />
+              <div className="space-y-3 p-5">
+                {["facebook", "instagram"].map((platform) => {
+                  const entry = social[platform];
+                  const ok = entry?.id || entry?.status === "posted";
+
+                  return (
+                    <div key={platform}>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-zinc-800 capitalize">
+                          {platform}
+                        </span>
+                        <Badge tone={ok ? "success" : "danger"}>
+                          {ok ? (
+                            <MdCheckCircle className="h-3.5 w-3.5" />
+                          ) : (
+                            <MdCancel className="h-3.5 w-3.5" />
+                          )}
+                          {ok ? "Posted" : "Failed"}
+                        </Badge>
+                      </div>
+                      {!ok && entry?.error && (
+                        <p className="mt-1 text-xs break-words text-red-600">
+                          {entry.error}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+
+                {Array.isArray(result?.social?.imageCheck) &&
+                  result.social.imageCheck.some((c) => !c.ok) && (
+                    <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700 ring-1 ring-red-200 ring-inset">
+                      Some image URLs were not publicly reachable, so Meta could not
+                      fetch them. Check PUBLIC_BASE_URL on the server.
+                    </p>
+                  )}
+              </div>
+            </Card>
+          )}
         </div>
-
-        {/* ✅ DESCRIPTION FIELD */}
-        <div className="mb-6">
-          <label className="block text-sm font-semibold mb-2">
-            Product Description
-          </label>
-
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={4}
-            placeholder="Write product description..."
-            className="w-full border border-gray-300 rounded-xl p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-black"
-          />
-
-          <p className="text-xs text-gray-400 mt-1">
-            Keep it short & attractive ✨
-          </p>
-        </div>
-
-        {/* SUBMIT */}
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="w-full bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition disabled:opacity-50 cursor-pointer"
-        >
-          {loading ? "Uploading..." : "Upload Product"}
-        </button>
-
       </div>
-    </div>
+    </>
   );
-};
-
-export default ImageUpload;
+}
