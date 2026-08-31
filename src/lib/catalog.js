@@ -11,6 +11,15 @@ export const SIZE_OPTIONS = [
   "Free Size",
 ];
 
+/**
+ * "Free Size" means one-size-fits-all, so it is contradictory alongside a
+ * graded run. Bulk "select all" covers the graded sizes only; Free Size is
+ * always a deliberate tick.
+ */
+export const FREE_SIZE = "Free Size";
+
+export const STANDARD_SIZES = SIZE_OPTIONS.filter((s) => s !== FREE_SIZE);
+
 export const MAX_ORDER_QTY = 2000;
 
 export const ORDER_STATUSES = [

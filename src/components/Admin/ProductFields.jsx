@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MdClose, MdAdd } from "react-icons/md";
-import { SIZE_OPTIONS } from "../../lib/catalog";
+import { FREE_SIZE, SIZE_OPTIONS, STANDARD_SIZES } from "../../lib/catalog";
 import { CardHeader } from "./ui";
 
 /**
@@ -23,11 +23,18 @@ export default function ProductFields({
       sizes.includes(size) ? sizes.filter((s) => s !== size) : [...sizes, size]
     );
 
-  const allSelected = sizes.length === SIZE_OPTIONS.length;
+  // Free Size is excluded: it means one-size-fits-all, so bulk-selecting it
+  // alongside a graded run would describe a product that cannot exist.
+  const allStandardSelected = STANDARD_SIZES.every((s) => sizes.includes(s));
 
-  // One control that flips meaning: select every size, or clear the lot.
-  const toggleAllSizes = () =>
-    onSizesChange(allSelected ? [] : [...SIZE_OPTIONS]);
+  const toggleAllSizes = () => {
+    // Whatever the admin chose for Free Size is left exactly as it was.
+    const freeSize = sizes.filter((s) => s === FREE_SIZE);
+
+    onSizesChange(
+      allStandardSelected ? freeSize : [...STANDARD_SIZES, ...freeSize]
+    );
+  };
 
   const addColor = () => {
     const value = colorDraft.trim();
@@ -92,9 +99,10 @@ export default function ProductFields({
               type="button"
               onClick={toggleAllSizes}
               disabled={disabled}
+              title={`${allStandardSelected ? "Clears" : "Selects"} XS to XXXL. Free Size is not included.`}
               className="cursor-pointer text-xs font-medium text-zinc-500 transition hover:text-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {allSelected ? "Clear all" : "Select all"}
+              {allStandardSelected ? "Clear all" : "Select all"}
             </button>
           </div>
 
