@@ -2,9 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 // Aliased to a capitalised name: this config has no eslint-plugin-react,
 // so a lowercase identifier used only in JSX reads as unused.
 import { motion as Motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { MdClose, MdAddShoppingCart, MdCheck } from "react-icons/md";
+import {
+  MdClose,
+  MdAddShoppingCart,
+  MdCheck,
+  MdOutlineShoppingCart,
+} from "react-icons/md";
 import useCartStore from "../../store/useCartStore";
 import useUserStore from "../../store/userStore";
 import { MAX_ORDER_QTY, clampQty, formatDate } from "../../lib/catalog";
@@ -30,6 +35,7 @@ export default function ProductDetailModal({
 
   const navigate = useNavigate();
   const addItem = useCartStore((s) => s.addItem);
+  const cartLines = useCartStore((s) => s.items.length);
   const user = useUserStore((s) => s.user);
   const token = useUserStore((s) => s.token);
 
@@ -290,6 +296,22 @@ export default function ProductDetailModal({
                   </>
                 )}
               </button>
+
+              {/* Shown once there is something to look at, so adding an item
+                  does not dead-end inside the modal. */}
+              {token && cartLines > 0 && (
+                <Link
+                  to="/cart"
+                  onClick={onClose}
+                  className="-mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 py-3 text-sm font-semibold text-gray-800 transition hover:border-gray-400 hover:bg-gray-50"
+                >
+                  <MdOutlineShoppingCart className="h-5 w-5" />
+                  View cart
+                  <span className="rounded-full bg-black px-2 py-0.5 text-xs text-white">
+                    {cartLines}
+                  </span>
+                </Link>
+              )}
 
               {!token && (
                 <p className="-mt-2 text-center text-xs text-gray-500">
